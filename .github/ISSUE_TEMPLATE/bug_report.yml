@@ -1,0 +1,37 @@
+name: Bug report
+description: Something doesn't work as described
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what you saw instead.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Downshift version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: "Windows 11 24H2"
+    validations:
+      required: true
+  - type: input
+    id: strap
+    attributes:
+      label: Strap
+      description: Model, and whether Broadcast Heart Rate was on.
+      placeholder: "WHOOP 4.0, broadcast on"
+  - type: textarea
+    id: log
+    attributes:
+      label: Bluetooth log
+      description: For connection problems, paste the log from Settings > General > Bluetooth log. It contains strap names and Bluetooth addresses; remove them if you prefer.
+      render: text

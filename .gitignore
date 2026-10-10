@@ -1,0 +1,16 @@
+# Build output
+bin/
+obj/
+artifacts/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+
+# Self-test output
+selftest-out/
+
+# OS
+Thumbs.db
+.DS_Store

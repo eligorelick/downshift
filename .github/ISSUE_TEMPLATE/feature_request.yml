@@ -1,0 +1,19 @@
+name: Feature request
+description: Suggest a change or addition
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would help
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Downshift's defaults follow published research. If this changes a default or adds a technique, link the studies that support it.
