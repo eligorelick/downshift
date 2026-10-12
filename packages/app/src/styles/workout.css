@@ -1,0 +1,215 @@
+/* Workout page. Built for a quick glance at arm's length with a sweaty thumb. */
+.wk-page {
+  gap: var(--space-4);
+}
+.wk-floor {
+  font-size: var(--text-lg);
+}
+.wk-floor .num {
+  font-size: var(--text-xl);
+}
+.wk-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 56px;
+  font-size: var(--text-md);
+  cursor: pointer;
+}
+.wk-toggle input {
+  width: 28px;
+  height: 28px;
+  accent-color: var(--accent);
+  flex: none;
+}
+
+.wk-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  text-align: center;
+}
+.wk-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.wk-val {
+  font-size: clamp(2rem, 10vw, 3.25rem);
+  font-weight: 750;
+  line-height: 1.05;
+}
+.wk-lab {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+}
+
+.wk-giant {
+  width: 100%;
+  min-height: 31dvh;
+  border: 2px solid transparent; /* invisible normally; shows as the button edge in High Contrast mode */
+  border-radius: var(--radius-lg);
+  font: inherit;
+  font-size: clamp(2.25rem, 11vw, 3.5rem);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  background: var(--accent);
+  color: var(--on-accent);
+  box-shadow: var(--shadow);
+  transition: background-color 0.15s;
+}
+.wk-giant:hover {
+  background: var(--accent-hover);
+}
+.wk-giant:active {
+  transform: scale(0.99);
+}
+.wk-giant:focus-visible {
+  outline: 4px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+/* Not ready yet: still tappable, but visibly the quieter choice. */
+.wk-start[data-ready="no"],
+.wk-start[data-ready="soon"] {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 2px solid var(--border-strong);
+}
+.wk-start[data-ready="yes"] {
+  background: var(--ok);
+  color: #fff;
+}
+/* The ready-state colors above replace the shared hover background, so hover is a slight darkening. */
+.wk-start:hover {
+  filter: brightness(0.95);
+}
+:root[data-theme="dark"] .wk-start[data-ready="yes"] {
+  color: #07201e;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .wk-start[data-ready="yes"] {
+    color: #07201e;
+  }
+}
+@media (min-width: 900px) {
+  .wk-giant {
+    min-height: 220px;
+  }
+}
+
+.wk-toast,
+.wk-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background: var(--warn-soft);
+  border: 2px solid var(--warn);
+  font-size: var(--text-lg);
+}
+.wk-toast .btn,
+.wk-confirm .btn {
+  min-height: 56px;
+  font-size: var(--text-md);
+}
+
+.wk-rest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: center;
+}
+.wk-advice {
+  font-size: var(--text-lg);
+  font-weight: 650;
+  max-width: 28ch;
+}
+.wk-rest[data-advice="hr-high"] .wk-advice {
+  color: var(--warn);
+}
+
+.rest-ring {
+  position: relative;
+  width: min(48vw, 26dvh, 300px);
+  aspect-ratio: 1;
+}
+.rest-ring svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.ring-track,
+.ring-fill {
+  fill: none;
+  stroke-width: 14;
+}
+.ring-track {
+  stroke: var(--surface-2);
+}
+.ring-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.25s linear;
+}
+.rest-ring[data-advice="ready"] .ring-fill,
+.rest-ring[data-advice="hr-unreliable"] .ring-fill {
+  stroke: var(--ok);
+}
+.rest-ring[data-advice="hr-high"] .ring-fill {
+  stroke: var(--warn);
+}
+.ring-tick {
+  stroke: var(--text);
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+.ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+}
+.ring-time {
+  /* Scales with the ring (same size expression), so even "11:41" stays inside it on short windows. */
+  font-size: calc(min(48vw, 26dvh, 300px) * 0.24);
+  font-weight: 800;
+  line-height: 1;
+}
+.ring-sub {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+}
+
+.wk-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-md);
+}
+.wk-table th,
+.wk-table td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.wk-table th {
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring-fill,
+  .wk-giant {
+    transition: none;
+  }
+}
+
+.wk-start[data-ready="soon"] {
+  border-color: var(--warn);
+}

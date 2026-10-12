@@ -1,81 +1,103 @@
 # Downshift
 
-Downshift is a small Windows app for studying with a WHOOP strap. It runs timed study blocks with breaks, guides slow breathing, and asks whether you feel tense when your seated heart rate stays raised. Every default is taken from published research, and the app says which numbers are tested and which are reasoned starting points.
+Focus blocks, rest timers and guided breathing, with optional live heart rate from a WHOOP or any other Bluetooth heart rate monitor.
+
+[![CI](https://github.com/eligorelick/downshift/actions/workflows/ci.yml/badge.svg)](https://github.com/eligorelick/downshift/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/eligorelick/downshift)](https://github.com/eligorelick/downshift/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+**[Open the web app](https://eligorelick.github.io/downshift/)** · **[Download for Windows](https://github.com/eligorelick/downshift/releases/latest)**
 
 <p>
-  <img src="docs/images/nudge-light.png" alt="The heart rate nudge: Feeling tense? with a 1 to 5 scale" width="340">
-  <img src="docs/images/breathing-dark.png" alt="The breathing pacer in the dark theme" width="340">
+  <img src="docs/images/home-light.png" alt="Downshift's Home page on desktop, light theme" width="640">
+</p>
+<p>
+  <img src="docs/images/focus-break-dark.png" alt="Focus mode on a phone: a break asking how you feel" width="200">
+  <img src="docs/images/workout-rest-light.png" alt="Workout mode on a phone: the rest timer counting toward its minimum" width="200">
+  <img src="docs/images/breathe-dark.png" alt="Breathe mode on a phone: the breathing pacer" width="200">
 </p>
 
-## Status
+Downshift runs in the browser and as a Windows app. It works without a heart rate device; connecting one adds advisory cues. Every default, from block lengths and rest minimums to breathing pace and the heart rate prompt, comes from published research, and the app shows how strong the support for each one is.
 
-This is an early release. The logic is covered by automated tests and the whole app has been run end to end against a simulated strap. It has **not yet been verified with a real WHOOP on a real Windows PC**. If you try it, please open an issue with what you found, whether it worked or not.
+## Features
 
-## What it does
+- **Focus.** Work blocks and breaks: 25/5 minutes (School) or 45 minutes (Work), with a two-minute warning, two snoozes and a note for where to pick up. Each break asks how you feel (tense, tired or fine) and suggests breathing, a walk or time away from screens. If your heart rate stays well above your baseline during a block, an optional prompt asks "Feeling tense?". It never tells you that you're stressed.
+- **Workout.** A rest timer between sets. The minimum rest comes from your goal (strength, size or endurance), and heart rate never shortens it. Once the minimum has passed, it can tell you your heart rate is still elevated.
+- **Breathe.** A visual pacer with spoken cues and tones. Six breaths a minute by default, with cyclic sighing and box breathing as options, and a tension rating before and after.
+- **History.** A log of your sessions, how sharp you felt by time of day, and CSV export.
 
-- **Study blocks and breaks.** 25 minutes of work, a 5-minute break, and a 20 to 30 minute break after about two hours. You get a two-minute warning, can delay twice, and can note where to pick up.
-- **Guided breathing.** Five minutes at six breaths a minute (4 seconds in, 6 out), with a visual pacer, optional spoken cues and tones. Cyclic sighing and box breathing are available as alternatives.
-- **Heart rate nudge.** During a study session, if your heart rate holds about 15 bpm above your seated baseline for five minutes, a silent box asks "Feeling tense?". It never tells you that you are stressed, because heart rate alone cannot show that.
-- **Your own data.** Each breathing session records how tense you felt before and after. The log is a plain CSV file on your PC.
-- **Pairing.** Downshift connects only to the strap you choose, and shows its live reading so you can confirm it is yours.
+## Heart rate devices
 
-Nothing leaves your computer. There is no account, no telemetry and no network access.
+Tested with **WHOOP 5.0** on the Windows app. Turn on **HR Broadcast** in the WHOOP app (Device settings), then connect from Downshift's Device page.
 
-## Install
+Downshift reads the standard Bluetooth Heart Rate Service, so other devices that broadcast it, such as chest straps, Fitbit Charge 6, Pixel Watch and Garmin watches, should also work. Setup steps for each are in [docs/platform-support.md](docs/platform-support.md). A device usually streams to one receiver at a time, so disconnect it from other apps and equipment first.
 
-1. Download `Downshift.exe` from the [Releases](../../releases) page.
-2. Run it. Windows may warn that the publisher is unknown, because the file is not code-signed; choose **More info**, then **Run anyway**.
-3. In the WHOOP app, turn on **Broadcast Heart Rate**.
-4. On Downshift's **Device** page, pick your strap from the list and choose **Pair with selected strap**.
+Heart rate needs a browser with Web Bluetooth: Chrome or Edge on Windows, macOS, Linux and Android, or [Bluefy](https://apps.apple.com/app/id1492822055) on iPhone. In Safari, Firefox and other iOS browsers, the timers and breathing still work without heart rate.
 
-Requirements: Windows 10 (version 1803 or later) or Windows 11, with Bluetooth. Nothing else needs installing; the app uses the .NET Framework that ships with Windows.
+## Getting started
 
-The study timer and breathing guide work without a strap.
+**Windows app.** Download the installer or the portable `.exe` from the [latest release](https://github.com/eligorelick/downshift/releases/latest). It adds a tray icon with your live heart rate and native notifications. The builds aren't code-signed yet, so SmartScreen will warn about an unknown publisher: choose **More info → Run anyway**. If Smart App Control is on, it blocks unsigned apps; install the website from Edge instead (Edge menu → **Apps** → **Install this site as an app**).
 
-## Using it
+**Website.** Open <https://eligorelick.github.io/downshift/> in Chrome or Edge, or in Bluefy on iPhone. You can install it as an app, and it works offline after the first visit.
 
-Downshift lives by the clock in the taskbar. The tray icon shows your live heart rate.
+**Connect your device.**
 
-| To do this | Do this |
-|---|---|
-| Open the main window | Double-click the tray icon |
-| See the status box | Click the tray icon |
-| Start studying | **Start study session**, on the Home page or the status box |
-| Breathe now | **Breathe**, in the tray menu or on the Home page |
-| Silence everything | **Mute sounds**, in the tray menu or Settings |
-| See why a default is what it is | The **Evidence** page |
+1. Turn on heart rate broadcasting on your device.
+2. In Downshift, open **Device** → **Connect a heart rate device** and choose your device.
+3. Check that the live reading matches your device.
 
-## What to expect
+No device? **Device** → **Try demo data** runs everything on a simulated heart rate.
 
-Slow breathing reliably makes people feel calmer for a short while, and regular short breaks reliably reduce fatigue. No trial shows that breathing prompts or any break schedule raises grades. For marks, the strong evidence is for self-testing, spreading study over days, and sleeping well.
+## How the defaults were chosen
 
-The heart rate nudge is deliberately modest. No study validates heart rate alone as a stress detector, and most real study stress is too small to trigger it. Use **Breathe** whenever you feel tense, and treat the nudge as an occasional reminder.
+Each default is labeled *tested in studies*, *supported by smaller trials or associations*, or *a reasoned starting point*. The main points:
 
-[docs/evidence.md](docs/evidence.md) lists each default with the research behind it. [docs/evidence-review.md](docs/evidence-review.md) is the full review with 91 sources.
+- Breathing exercises give a small-to-medium drop in self-reported stress, though in the largest blinded trial a placebo pace helped about as much.
+- Short breaks reduce fatigue and raise energy. Their effect on performance is small and uncertain.
+- Longer rests between sets help strength. No trial we know of shows that resting by heart rate improves gains, so the rest minimum is a clock and heart rate is advice only.
+- Heart rate alone hasn't been validated as a stress detector, so the prompt asks how you feel instead of telling you. Most everyday stress probably won't trigger it.
 
-## Build from source
+Downshift makes no promises about grades, strength or muscle gains. Each default and its sources are listed in [docs/evidence.md](docs/evidence.md). There are deeper reviews of [Workout and Work](docs/evidence-workout-work.md), [heart rate and thinking](docs/evidence-cognition.md), and the [full literature review](docs/evidence-review.md) of about 90 sources. Every DOI and PubMed ID was checked against Crossref and NCBI.
 
-You need the [.NET 8 SDK](https://dotnet.microsoft.com/download). The app targets .NET Framework 4.7.2 and builds on Windows, Linux or macOS.
+## Privacy
+
+There's no account, server, telemetry or analytics. Settings and history stay in your browser's storage (or the Windows app's own profile). Live heart rate isn't recorded; only session summaries are saved, such as your heart rate at the start and end of a rest. You can export your history as CSV or delete everything from Settings. Spoken cues use your system's voices, and some browsers use an online voice service for these.
+
+## Development
+
+Requires [Bun](https://bun.sh) 1.4.
+
+```sh
+bun install
+bun run dev            # dev server with hot reload
+bun run test           # unit tests: core, ble, app
+bun run lint
+bun run typecheck
+bun run e2e            # Playwright; first run: cd packages/app && bunx playwright install chromium
+bun run build          # website → packages/app/dist
+bun run desktop        # run the Windows app
+bun run desktop:dist   # installer and portable exe → packages/desktop/release
+```
 
 ```
-dotnet build Downshift.sln -c Release
-dotnet run --project tests/Downshift.Tests -c Release
+packages/core      Decision logic: nudge, focus clock, rest coach, breathing. No DOM, fully unit-tested.
+packages/ble       Heart rate sources: Web Bluetooth and a simulator.
+packages/app       React + Vite UI. Builds the website.
+packages/desktop   Electron shell for Windows.
 ```
 
-The executable is written to `src/Downshift/bin/Release/net472/Downshift.exe`. It is a single file of about 170 KB with no other files to ship.
-
-See [docs/architecture.md](docs/architecture.md) for how the code is organized and [CONTRIBUTING.md](CONTRIBUTING.md) for how to work on it.
+See [docs/architecture.md](docs/architecture.md) for how it fits together and [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. The original 0.1.0 Windows Forms app is preserved in the [first commit](https://github.com/eligorelick/downshift/tree/4ef898d5af933566dcfeb83621c86b761e31ac70).
 
 ## Troubleshooting
 
-If the strap won't connect, see [docs/troubleshooting.md](docs/troubleshooting.md). The Bluetooth log, under Settings, General, records what the app saw and is the most useful thing to attach to a bug report.
+See [docs/troubleshooting.md](docs/troubleshooting.md). For connection problems, the Bluetooth log on the Device page shows what the app saw; attach it to bug reports.
 
-## Not a medical device
+## Disclaimer
 
-Downshift is a self-regulation aid. It does not diagnose, treat or monitor any condition. A racing heart with chest pain, faintness or trouble breathing needs medical care, not a breathing exercise.
+Downshift is a timing and self-regulation aid, not a medical device. It doesn't diagnose, treat or monitor any condition. A racing heart with chest pain, faintness or trouble breathing needs medical care. Stop lifting if something hurts.
 
-Downshift is an independent project. It is not affiliated with, endorsed by or supported by WHOOP, Inc. WHOOP is a trademark of its owner. The app reads only the standard Bluetooth heart rate broadcast that the strap offers to any fitness device.
+Downshift is an independent project, not affiliated with or endorsed by WHOOP, Fitbit, Google, Apple, Polar or Garmin. Their names are trademarks of their respective owners.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). Bundled third-party packages and their licenses are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

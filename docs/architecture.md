@@ -1,47 +1,79 @@
 # Architecture
 
-Downshift is a single Windows Forms executable targeting .NET Framework 4.7.2. That target is deliberate: the framework ships with Windows 10 and 11, so the app is one small file with nothing to install.
+Downshift is a Bun workspace of four TypeScript packages. The website is the product; the Windows app is the same website in an Electron window with a tray icon. The original 0.1.0 Windows Forms app is preserved in the first commit of the history (`4ef898d`).
 
-## Source files
+```
+packages/core/      Pure TypeScript. All decision logic. No DOM, no Bluetooth, no timers.
+packages/ble/       One heart rate interface with two adapters: Web Bluetooth and Simulated.
+packages/app/       React + Vite UI. Builds the website and installable app (PWA).
+packages/desktop/   Electron shell around the built app. Windows installer and portable exe.
+```
 
-| File | What it holds |
+Dependencies point one way: `core` is used by `ble`, which is used by `app`, which is bundled by `desktop`. Nothing in `core` reads the clock: every time-dependent function takes `now` in milliseconds as an argument, so tests are deterministic and need no fake timers. This is the tested part, and logic goes here.
+
+## packages/core
+
+| Module | What it holds |
 |---|---|
-| `Core.cs` | Everything with no Windows dependency: heart rate packet parsing, the nudge rule (`NudgeDetector`), the study rhythm (`StudyClock`), breathing patterns, settings, and pairing rules. This is the tested part. |
-| `Program.cs` | `TrayApp`, the controller. It owns the tray icon, wires the strap to the detector, runs breathing sessions and study sessions, and decides what the notification box shows. |
-| `Card.cs` | The notification-style box in the corner of the screen. Custom-drawn, never takes keyboard focus. |
-| `MainForm.cs` | The main window and its four pages, built from standard Windows controls. |
-| `Strap.cs`, `IStrap.cs` | Bluetooth. `IStrap` has no Windows Runtime types in it, so the app still starts where those APIs are missing. |
-| `Sound.cs`, `ModernVoice.cs` | Tones and speech, with two speech engines behind `IVoiceEngine`. |
-| `Theme.cs` | Colors and fonts. The box follows the Windows theme and accent color. |
-| `Evidence.cs` | The text of the Evidence page. |
-| `SelfTest.cs` | Compiled only with `SELFTEST`: a simulated strap and a script that drives every screen. |
+| `hrPacket.ts` | Parses the Bluetooth heart rate measurement: 8 or 16 bit bpm, sensor contact, energy, RR intervals. |
+| `nudge.ts` | `NudgeDetector`: per-minute medians, a baseline of the session's earlier minutes, a rise held for minutes, a movement hold-off, and the high-heart-rate check-in. A port of the 0.1.0 detector with the same constants. |
+| `focusClock.ts`, `presets.ts` | The block and break rhythm: heads-up, snooze twice, extend, long break. The School and Work presets only set the numbers and the wording. |
+| `breakAdvice.ts` | Maps "tense, tired or fine" (plus heart rate context) to a suggested break. |
+| `restCoach.ts` | The Workout rest state machine: the rest floor from your goal, advisory "heart rate settled" cues, a low-confidence flag, and the set-end suggestion. |
+| `breathing.ts` | Breathing patterns, the pacer (`breathAt(pattern, elapsedSec)`), and the technique guide. |
+| `settings.ts` | Typed settings, defaults, clamping, and versioned JSON. |
+| `sharpness.ts` | Groups your own 1–5 sharpness ratings by time of day for History. |
+| `log.ts`, `setRecord.ts` | The event records and CSV export. |
+| `pairing.ts`, `format.ts` | Matching the remembered device; clock formatting. |
 
 ## How a heart rate reading flows
 
-1. `Strap` subscribes to the Bluetooth heart rate measurement and raises `Reading` on a background thread.
-2. `TrayApp` posts it to the UI thread and passes it to `NudgeDetector.Push`.
-3. The detector collects readings into per-minute medians. Per-second readings from a wrist strap are too noisy during posture changes to judge anything on.
-4. When a minute closes, the detector compares recent minutes with a baseline: the median of the last half hour of seated minutes, leaving out the newest few so an episode cannot raise its own bar.
-5. If enough consecutive minutes sit above baseline plus the threshold, and no movement-shaped jump restarted the count, the detector reports that a nudge is due.
-6. `TrayApp` checks the hourly and daily limits, waits for a pause in typing, and shows the question.
+1. A `HeartRateSource` from `packages/ble` raises readings: `WebBluetoothSource` from a real device, or `SimulatedSource` in demo mode and in tests.
+2. `hrStore` in the app keeps the latest reading and a ten-minute buffer, and shares them with every page.
+3. The active session subscribes to readings with `onHeartRate` and passes each one, with `now`, to `core` as it arrives: `NudgeDetector` for Focus, `RestCoach` for Workout. A one-second tick (500 ms in Workout) drives timers and cues, and Workout seeds itself from `recentReadings()` only when it starts.
+4. `core` returns plain values (a nudge is due, the advice is "ready", the floor has passed). The session turns them into UI, sounds and log events.
+5. In the Windows app, `hrStore` also tells the shell the current bpm from a real device (not demo data), which draws the tray icon.
 
-## Design decisions
+Per-second readings from a wrist sensor are unreliable around rapid heart rate changes (Van Oost 2025), and wrist sensors read low during lifting (Zhang 2020; Boudreaux 2018), so the detectors work on medians over seconds or minutes and treat sudden jumps as movement or sensor error (the nudge pauses counting; Workout suppresses its heart rate cues).
 
-**The nudge asks; it does not tell.** No study validates heart rate alone as a stress detector, and movement raises heart rate as much as stress does. The app therefore only puts a question, offers "I was moving" as an answer, and logs the answer.
+## packages/ble
 
-**Monitoring runs during study sessions by default.** That is when the person is sitting, which is the only condition under which a raised heart rate means much.
+`HeartRateSource` is one small interface: `connect`, `disconnect`, `onReading`, `onState`. `WebBluetoothSource` filters on the `heart_rate` service, also accepts a few device name prefixes, and reconnects with backoff when the link drops. `detectSupport` explains why a browser cannot connect (iOS, Firefox, an insecure page). `BtLog` is a plain-language trace shown on the Device page for troubleshooting. A native iPhone adapter could implement the same interface later.
 
-**The strap is chosen explicitly.** The app connects only to the paired strap, matched by Bluetooth address or by name. WHOOP names carry the serial number, so the name survives an address change.
+## packages/app
 
-**Windows Runtime code is isolated.** `Strap` and `ModernVoice` use Windows Runtime APIs. Each is created inside a method marked `NoInlining` and wrapped in a `try`, so a PC without those APIs gets a clear message and a working timer and breathing guide.
+React 18 with Vite and hand-written CSS using design tokens; light and dark from the system, with an override. Pages are Home, Focus, Workout, Breathe, History, Device, Evidence and Settings, routed by the URL hash so it works from any subpath and from the Electron `app://` origin.
 
-**Two speech engines.** The newer engine exposes voices added in Windows Settings. If it fails, the app falls back to the older desktop engine for the rest of the run.
+- **State** is small stores read with `useSyncExternalStore`: settings (browser local storage), heart rate, and the event log (IndexedDB, with an in-memory fallback if storage is blocked).
+- **Sessions** (`sessions/`) hold the running Focus and Workout state outside the pages, so you can look at another page without losing a timer. A Breathe session belongs to the Breathe page and ends, saving the breaths done, when you leave it.
+- **Time** comes from one `now()` function. Tests move `window.__downshiftClock.offset` to fast-forward every timer, which is how the browser tests run a 25-minute block in seconds.
+- **Notifications.** Downshift asks for notification permission when you start a Focus session or Workout, until you answer, and never on load. A system notification is shown only if permission was granted and the page is hidden; otherwise alerts are in-page.
+- **Evidence** page text lives in `content/evidence.ts` and must match `docs/evidence*.md`.
+- **Offline.** `vite-plugin-pwa` precaches the app. Vite's `base` is `./`, so the build works from a GitHub Pages subpath.
 
-## Files on disk
+## packages/desktop
 
-All under `%APPDATA%\Downshift`:
+An Electron main process and a preload script. The app files are served from a custom `app://downshift` origin instead of `file://`, so Web Bluetooth gets a secure context. The main process:
 
-- `settings.ini`: settings, the paired strap and today's tally
-- `downshift-log.csv`: breathing sessions, nudges and study sessions
-- `bluetooth-log.txt`: a plain-language trace of the Bluetooth side
-- `error.log`: unexpected errors
+- sets a content security policy on every response and blocks navigation and new windows;
+- turns on context isolation and the sandbox, with Node integration off, and exposes only a handful of named IPC messages through the preload;
+- allows only the Bluetooth, notification and wake lock permissions, and only for the app's own origin;
+- answers the Bluetooth device chooser itself: it reconnects to the remembered device, or asks the app to show its own list;
+- draws the tray icon from the app's live bpm, and shows a tray menu (open, breathe now, start focus, mute);
+- allows only one running instance.
+
+`electron-builder` produces an NSIS installer and a portable exe in `packages/desktop/release`. See [SECURITY.md](../SECURITY.md).
+
+DevTools are disabled in the packaged app (`devTools: !app.isPackaged`). A possible future hardening is to flip Electron fuses (for example disabling `RunAsNode` and the `NODE_OPTIONS` environment variable) with `@electron/fuses` at package time; this is not done yet.
+
+## Tests and CI
+
+- `bun run test` runs the `core`, `ble` and `app` unit tests.
+- Playwright tests in `packages/app/e2e` run the built app in Chromium, desktop and phone sizes, against the simulated heart rate source with the clock offset.
+- `ci.yml` runs lint, typecheck, tests, build and e2e on Linux, and builds the Windows installer on Windows. `pages.yml` deploys the website. `release.yml` builds the installer and portable exe and attaches them to a GitHub Release when a `v*` tag is pushed.
+
+## Where your data lives
+
+- Website and Windows app: settings in local storage, the event log in IndexedDB, both inside the browser profile or the app's own profile folder. "Delete all data" in Settings clears the history and resets settings to their defaults, keeping only the theme.
+- The Windows app keeps its profile in its own folder under `%APPDATA%`.
+- Nothing is sent anywhere.

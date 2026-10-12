@@ -1,0 +1,42 @@
+{
+  "name": "@downshift/app",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Focus blocks, rest timers and guided breathing, with optional live heart rate from a Bluetooth heart rate monitor.",
+  "author": "Eli Gorelick",
+  "license": "MIT",
+  "homepage": "https://eligorelick.github.io/downshift/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eligorelick/downshift.git",
+    "directory": "packages/app"
+  },
+  "bugs": {
+    "url": "https://github.com/eligorelick/downshift/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p . --noEmit && vite build",
+    "preview": "vite preview --port 4173",
+    "typecheck": "tsc -p . --noEmit",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@downshift/ble": "workspace:*",
+    "@downshift/core": "workspace:*",
+    "idb": "^8.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/web-bluetooth": "^0.0.20",
+    "@vitejs/plugin-react": "^4.3.3",
+    "vite": "^5.4.10",
+    "vite-plugin-pwa": "^0.20.5",
+    "workbox-window": "^7.4.1"
+  }
+}

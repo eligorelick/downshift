@@ -1,7 +1,13 @@
 # Code of conduct
 
-This project adopts the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
+This project follows the [Contributor Covenant, version 2.1](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
 
-Be respectful, assume good faith and keep discussion about the work. Harassment, personal attacks and discriminatory language are not acceptable in issues, pull requests or any other project space.
+Be respectful and keep discussion about the work. Harassment, personal attacks and discriminatory language aren't tolerated in issues, pull requests or anywhere else in the project.
 
-To report a problem, contact the maintainers privately through the repository's **Security** tab ("Report a vulnerability"), which opens a private channel. Reports are handled confidentially.
+## Reporting
+
+Email **elivgorelick@gmail.com**. Reports are handled confidentially. Please use this address only for conduct reports, not for bugs or support.
+
+If your report is about the maintainer, use [GitHub's abuse reporting](https://docs.github.com/en/communities/maintaining-your-safety-on-github/reporting-abuse-or-spam) instead.
+
+Security vulnerabilities are covered in [SECURITY.md](SECURITY.md).

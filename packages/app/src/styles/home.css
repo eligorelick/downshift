@@ -1,0 +1,61 @@
+.welcome {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+.welcome ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.home-hr {
+  text-decoration: none;
+  color: var(--text);
+  gap: var(--space-1);
+}
+.home-hr:hover {
+  background: var(--surface-2);
+}
+/* As many columns as fit at 14rem each (one on phones), so the one-line buttons never overflow a card. */
+.mode-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+.mode-grid .card {
+  align-items: flex-start;
+}
+.mode-grid .card > :last-child {
+  margin-top: auto;
+}
+/* Keep each button on one line. */
+.mode-grid .btn {
+  white-space: nowrap;
+  padding-inline: var(--space-3);
+}
+.caveat {
+  font-size: var(--text-sm);
+  border-left: 3px solid var(--warn);
+  padding-left: var(--space-3);
+}
+.tally {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+.tally dt {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.tally dd {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+@media (min-width: 640px) {
+  .tally {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

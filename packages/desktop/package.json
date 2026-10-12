@@ -1,0 +1,29 @@
+{
+  "name": "@downshift/desktop",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Downshift for Windows: the Downshift app in an Electron window with a tray icon showing live heart rate",
+  "author": "Eli Gorelick",
+  "license": "MIT",
+  "homepage": "https://eligorelick.github.io/downshift/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eligorelick/downshift.git",
+    "directory": "packages/desktop"
+  },
+  "bugs": {
+    "url": "https://github.com/eligorelick/downshift/issues"
+  },
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "bun build src/main.ts src/preload.ts --outdir dist --target node --external electron --format cjs",
+    "start": "bun run build && bun run --cwd ../app build && electron .",
+    "dist": "bun run build && bun run --cwd ../app build && electron-builder --win nsis portable --publish never",
+    "typecheck": "tsc -p . --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "electron": "^44.7.0",
+    "electron-builder": "^26.15.3"
+  }
+}

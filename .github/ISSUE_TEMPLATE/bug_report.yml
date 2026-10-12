@@ -9,29 +9,59 @@ body:
       description: What you did, what you expected, and what you saw instead.
     validations:
       required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where are you using Downshift?
+      options:
+        - Website in a browser
+        - Installed website (PWA)
+        - Windows app (installer)
+        - Windows app (portable)
+        - Built from source
+    validations:
+      required: true
   - type: input
     id: version
     attributes:
       label: Downshift version
-      placeholder: "0.1.0"
+      description: The release you downloaded, or the version in package.json if you built it.
+      placeholder: "0.2.0"
     validations:
       required: true
   - type: input
-    id: windows
+    id: platform
     attributes:
-      label: Windows version
-      placeholder: "Windows 11 24H2"
+      label: Operating system
+      placeholder: "Windows 11 24H2, Android 15, iOS 18"
     validations:
       required: true
   - type: input
-    id: strap
+    id: browser
     attributes:
-      label: Strap
-      description: Model, and whether Broadcast Heart Rate was on.
-      placeholder: "WHOOP 4.0, broadcast on"
+      label: Browser and version
+      description: Leave blank for the Windows app.
+      placeholder: "Chrome 130, Edge 130, Bluefy 3.x"
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Which mode
+      options:
+        - Focus
+        - Workout
+        - Breathe
+        - Device or connecting
+        - History or Settings
+        - Other
+  - type: input
+    id: device
+    attributes:
+      label: Heart rate device
+      description: Model, and whether heart rate sharing or broadcast was on. Say if you used the demo data.
+      placeholder: "WHOOP 5.0 with HR Broadcast on; Fitbit Charge 6; Polar H10; demo data"
   - type: textarea
     id: log
     attributes:
       label: Bluetooth log
-      description: For connection problems, paste the log from Settings > General > Bluetooth log. It contains strap names and Bluetooth addresses; remove them if you prefer.
+      description: For connection problems, paste the log from the Device page. It contains device names; remove them if you prefer.
       render: text

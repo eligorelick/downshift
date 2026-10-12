@@ -1,0 +1,149 @@
+.evidence .ev-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.ev-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+.ev-toc a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.ev-toc a:hover {
+  background: var(--accent-soft);
+}
+.ev-section {
+  scroll-margin-top: calc(var(--space-7) + var(--space-3));
+}
+/* Reached from a contents link with the keyboard: show where focus landed, unlike the page heading. */
+section.ev-section:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+/* Below 900 px the page scroll-padding already clears the top bar, so only a small margin is added. */
+@media (max-width: 899px) {
+  .ev-section {
+    scroll-margin-top: var(--space-3);
+  }
+}
+.ev-section h3 {
+  font-size: var(--text-md);
+  font-weight: 650;
+}
+.ev-sub {
+  margin-top: var(--space-3);
+}
+.ev-lead {
+  padding: var(--space-3) var(--space-4);
+  background: var(--warn-soft);
+  border-radius: var(--radius-sm);
+}
+.ev-bullets {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+.ev-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ev-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.ev-row {
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+.ev-row-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+.ev-row-head strong {
+  flex: 1 1 14rem;
+  font-weight: 650;
+}
+.ev-col {
+  font-weight: 650;
+  color: var(--text-muted);
+}
+.ev-tag {
+  display: inline-block;
+  padding: 2px var(--space-3);
+  border-radius: var(--radius-pill);
+  border: 1.5px solid var(--border-strong);
+  font-size: var(--text-xs);
+  font-weight: 650;
+  line-height: 1.4;
+  white-space: normal;
+}
+/* A leading mark keeps the three tones apart without relying on color. */
+.ev-tag[data-tone="tested"] {
+  background: var(--accent-soft);
+  border-color: var(--ok);
+  color: var(--text);
+}
+.ev-tag[data-tone="tested"]::before {
+  content: "\2713 ";
+}
+.ev-tag[data-tone="partial"]::before {
+  content: "\25D0 ";
+}
+.ev-tag[data-tone="start"] {
+  background: var(--warn-soft);
+  border-color: var(--warn);
+  color: var(--text);
+}
+.ev-tag[data-tone="start"]::before {
+  content: "\25CB ";
+}
+.ev-sources {
+  margin: 0;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}
+.ev-tag::before {
+  margin-right: 0.35em;
+}
+.ev-sources-note {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@downshift/core",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc -p . --noEmit"
+  }
+}

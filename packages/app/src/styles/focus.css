@@ -1,0 +1,134 @@
+/* Focus page. The clock is the one thing to read at a glance. */
+.fc-page {
+  gap: var(--space-4);
+}
+.fc-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.fc-slider input {
+  width: 100%;
+  min-height: var(--tap);
+  accent-color: var(--accent);
+}
+.fc-range {
+  display: flex;
+  justify-content: space-between;
+  font-size: var(--text-xs);
+}
+.fc-kicker {
+  color: var(--text-muted);
+  font-weight: 650;
+  text-align: center;
+}
+.fc-time {
+  font-size: var(--text-num);
+  font-weight: 750;
+  line-height: 1;
+  text-align: center;
+  letter-spacing: -0.01em;
+}
+.fc-total {
+  text-align: center;
+  color: var(--text-muted);
+}
+.fc-total strong {
+  color: var(--text);
+}
+.fc-lost {
+  background: var(--warn-soft);
+  color: var(--text);
+  border-left: 4px solid var(--warn);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+}
+.fc-page .card > .btn-ghost {
+  align-self: center;
+}
+.fc-heads,
+.fc-due,
+.fc-prompt {
+  border-left: 4px solid var(--accent);
+}
+.fc-prompt[data-due="high"] {
+  border-left-color: var(--warn);
+}
+.fc-heads h2,
+.fc-due h2,
+.fc-prompt h2,
+.fc-sharp h2 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+}
+.fc-medical {
+  background: var(--warn-soft);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  font-weight: 600;
+}
+.fc-note {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  font-weight: 600;
+}
+.fc-note input {
+  font: inherit;
+  min-height: var(--tap);
+  padding: 0 var(--space-3);
+  color: var(--text);
+  background: var(--bg);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+.fc-feel {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.fc-feel legend {
+  padding: 0;
+  font-weight: 650;
+  font-size: var(--text-lg);
+  margin-bottom: var(--space-3);
+}
+.fc-feel-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.fc-feel-opt {
+  min-height: 56px;
+  font: inherit;
+  font-weight: 650;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.fc-feel-note {
+  margin: calc(-1 * var(--space-1)) 0 var(--space-3);
+}
+.fc-suggest {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  padding: var(--space-4);
+  background: var(--accent-soft);
+  border-radius: var(--radius);
+}
+.fc-suggest strong {
+  font-size: var(--text-md);
+}
+.fc-breathe {
+  margin-top: var(--space-2);
+}
+
+/* Live region for the sharpness question: always present so it is announced, and no extra gap while empty. */
+.fc-live:empty {
+  margin-bottom: calc(-1 * var(--space-4));
+}

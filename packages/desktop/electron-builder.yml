@@ -1,0 +1,25 @@
+appId: io.github.eligorelick.downshift
+copyright: "Copyright © 2026 Eli Gorelick and contributors"
+productName: Downshift
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**
+  - package.json
+extraResources:
+  - from: ../app/dist
+    to: app-dist
+  - from: build/icon.ico
+    to: icon.ico
+artifactName: Downshift-${version}-${arch}.${ext}
+win:
+  icon: build/icon.ico
+  target:
+    - nsis
+    - portable
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+portable:
+  artifactName: Downshift-${version}-${arch}-portable.${ext}

@@ -1,0 +1,130 @@
+/* Device page only. Built on the shared tokens. */
+
+.notice {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius);
+  border: 1px solid var(--warn);
+  background: var(--warn-soft);
+  color: var(--text);
+}
+.notice a {
+  color: var(--text);
+  font-weight: 600;
+}
+.notice .muted {
+  color: var(--text);
+  opacity: 0.8;
+}
+
+.device-contact {
+  color: var(--text-muted);
+}
+.device-contact[data-bad="true"] {
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.chooser {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.chooser h3 {
+  font-size: var(--text-md);
+}
+/* A device name can be one long word; it wraps inside its button. */
+.chooser .btn {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.chooser ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.select-field select {
+  min-height: var(--tap);
+  padding: var(--space-2) var(--space-4);
+  font: inherit;
+  color: var(--text);
+  background: var(--surface);
+  border: 1.5px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+}
+.accordion details {
+  border-top: 1px solid var(--border);
+}
+.accordion details:first-child {
+  border-top: 0;
+}
+.accordion summary {
+  min-height: var(--tap);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 600;
+  padding: var(--space-2) 0;
+}
+.accordion summary {
+  justify-content: space-between;
+  list-style: none;
+}
+.accordion summary::-webkit-details-marker {
+  display: none;
+}
+.accordion summary::after {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: var(--space-2);
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.accordion details[open] > summary::after {
+  transform: rotate(-135deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .accordion summary::after {
+    transition: none;
+  }
+}
+.accordion ol {
+  margin: 0 0 var(--space-3);
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  color: var(--text-muted);
+}
+
+.btlog {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.btlog-text {
+  margin: 0;
+  width: 100%;
+  resize: vertical;
+  padding: var(--space-3);
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid transparent; /* invisible normally; outlines the log box in High Contrast mode */
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}

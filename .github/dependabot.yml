@@ -1,0 +1,21 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']
+
+  - package-ecosystem: bun
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      dependencies:
+        patterns: ['*']
+    # Major upgrades (React, Vite, Biome) need code changes, so they're done by hand.
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-major']

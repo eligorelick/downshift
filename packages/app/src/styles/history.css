@@ -1,0 +1,145 @@
+.btn-danger {
+  background: var(--danger);
+  color: #fff;
+}
+/* Same specificity as .btn-primary's hover rule and later in the bundle, so hover stays the danger color. */
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger);
+  filter: brightness(0.92);
+}
+:root[data-theme="dark"] .btn-danger {
+  color: #1d0a08;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-danger {
+    color: #1d0a08;
+  }
+}
+
+dialog.confirm {
+  max-width: min(440px, calc(100vw - 2 * var(--space-4)));
+  width: 100%;
+  padding: var(--space-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 16px 48px rgb(0 0 0 / 0.35);
+}
+dialog.confirm::backdrop {
+  background: rgb(0 0 0 / 0.5);
+}
+dialog.confirm[open] {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.confirm-actions {
+  justify-content: flex-end;
+}
+
+.history-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+/* Chips keep their width (wrapping to a new row) rather than squeezing the words together. */
+.history-bar .segmented label {
+  flex: none;
+}
+.history-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.history-item {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px;
+  padding: var(--space-3) 0;
+  border-top: 1px solid var(--border);
+}
+.history-item:first-child {
+  border-top: 0;
+}
+.history-type {
+  font-weight: 650;
+}
+.history-when {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.history-detail {
+  font-size: var(--text-sm);
+}
+@media (min-width: 640px) {
+  .history-item {
+    grid-template-columns: 11rem 7rem 1fr;
+    gap: var(--space-3);
+    align-items: baseline;
+  }
+}
+
+/* When you feel sharpest: label, bar and the numbers as text. Bars are decoration; the text carries it. */
+.sharp-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.sharp-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-1);
+}
+.sharp-label {
+  font-weight: 650;
+}
+.sharp-bar {
+  display: block;
+  height: 10px;
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.sharp-fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+}
+/* Few ratings: a fainter bar, not a hidden row; the words "few sessions" carry it for everyone. */
+.sharp-row[data-few="yes"] .sharp-fill {
+  opacity: 0.45;
+}
+/* Forced colors would remove the fill's background, leaving every bar empty. */
+@media (forced-colors: active) {
+  .sharp-fill {
+    forced-color-adjust: none;
+    background: Highlight;
+  }
+}
+.sharp-stat {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.sharp-scale {
+  font-size: var(--text-xs);
+}
+@media (min-width: 640px) {
+  .sharp-row {
+    grid-template-columns: 14rem 1fr 11rem;
+    gap: var(--space-3);
+    align-items: center;
+  }
+  .sharp-stat {
+    text-align: right;
+  }
+}

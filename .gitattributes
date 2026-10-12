@@ -1,5 +1,4 @@
-* text=auto
-*.cs text diff=csharp
-*.sh text eol=lf
+# LF everywhere so Biome's formatter agrees on every OS
+* text=auto eol=lf
 *.ico binary
 *.png binary

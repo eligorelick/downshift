@@ -1,0 +1,84 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+.field-top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  align-items: baseline;
+}
+.field-top label,
+.field-label {
+  font-weight: 600;
+}
+.field-val {
+  flex: none;
+  white-space: nowrap;
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.field input[type="range"] {
+  width: 100%;
+  min-height: var(--tap);
+  accent-color: var(--accent);
+  margin: 0;
+}
+.field-note {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+}
+.basis {
+  font-weight: 650;
+  padding: 2px var(--space-3);
+  /* Not a pill: the note often wraps to two or three lines, and a pill's round ends would cut into it. */
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border-strong);
+}
+.basis[data-basis="start"] {
+  background: var(--warn-soft);
+  border-color: var(--warn);
+}
+.basis[data-basis="tested"] {
+  background: var(--accent-soft);
+  border-color: var(--ok);
+}
+.field.toggle {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: var(--space-3);
+  min-height: var(--tap);
+}
+.field.toggle input {
+  width: 24px;
+  height: 24px;
+  margin: 10px 0 0;
+  flex: none;
+  accent-color: var(--accent);
+}
+.field.toggle label {
+  min-height: var(--tap);
+  padding: var(--space-2) 0;
+  font-weight: 600;
+}
+.field.toggle label .muted {
+  font-weight: 400;
+  display: block;
+  font-size: var(--text-sm);
+}
+.settings .small {
+  font-size: var(--text-sm);
+}
+.settings hr {
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: var(--space-2) 0;
+}
+.basis[data-basis="convention"] {
+  background: var(--surface-2);
+}
