@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
-## [0.2.0] - Unreleased
+## [0.2.0] - 2026-10-12
 
 A full rebuild as a single TypeScript codebase that runs in the browser and as a Windows app. The 0.1.0 Windows Forms app is no longer in the main tree; its source is preserved in the first commit of the history ([`4ef898d`](https://github.com/eligorelick/downshift/tree/4ef898d5af933566dcfeb83621c86b761e31ac70)).
 
@@ -54,5 +54,5 @@ First release: a Windows tray app for studying with a WHOOP strap.
 - The executable is not code-signed.
 - The main window does not follow the Windows dark theme.
 
-[0.2.0]: https://github.com/eligorelick/downshift/compare/4ef898d5af933566dcfeb83621c86b761e31ac70...main
+[0.2.0]: https://github.com/eligorelick/downshift/compare/4ef898d5af933566dcfeb83621c86b761e31ac70...v0.2.0
 [0.1.0]: https://github.com/eligorelick/downshift/tree/4ef898d5af933566dcfeb83621c86b761e31ac70
