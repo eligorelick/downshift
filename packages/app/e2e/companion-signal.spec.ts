@@ -26,6 +26,57 @@ async function learnBaseline(page: Page): Promise<void> {
   await expect(companion(page).getByText('Watching your heart rate', { exact: true })).toBeVisible()
 }
 
+test('a queued high check-in respects a newer cooldown received from another tab', async ({ page }) => {
+  await startConnected(page)
+  await learnBaseline(page)
+  await nativeStream(page, 9 * 60 + 59, 136)
+  await page.mouse.move(7, 7)
+  const newerCooldown = await page.evaluate(() => {
+    window.__nativeHrFixture.advance(1000)
+    window.__nativeHrFixture.emit(136, true)
+    const settings = JSON.parse(localStorage.getItem('downshift.settings') ?? '{}')
+    settings.lastHighNudgeAt = Date.now() + (window.__downshiftClock?.offset ?? 0)
+    const raw = JSON.stringify(settings)
+    localStorage.setItem('downshift.settings', raw)
+    window.dispatchEvent(new StorageEvent('storage', { key: 'downshift.settings', newValue: raw }))
+    return settings.lastHighNudgeAt as number
+  })
+  await nativeAdvance(page, 2)
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('downshift.settings') ?? '{}').lastHighNudgeAt),
+  ).toBe(newerCooldown)
+  await expect(prompt(page)).toHaveCount(0)
+})
+
+test('a queued routine check-in respects a daily cap received from another tab', async ({ page }) => {
+  await nativeBluetoothPage(page)
+  await go(page, 'settings')
+  await page.getByRole('slider', { name: 'Rise above baseline', exact: true }).press('Home')
+  await page.getByRole('slider', { name: 'Held for', exact: true }).press('Home')
+  await connectNative(page)
+  await companion(page).getByRole('button', { name: 'Start companion', exact: true }).click()
+  await nativeSample(page, 70, true, 0)
+  await learnBaseline(page)
+  // A 12 bpm step avoids the abrupt-jump hold; the third full minute closes on the last packet.
+  await nativeStream(page, 2 * 60 + 59, 82)
+  await page.mouse.move(7, 7)
+  await page.evaluate(() => {
+    window.__nativeHrFixture.advance(1000)
+    window.__nativeHrFixture.emit(82, true)
+    const settings = JSON.parse(localStorage.getItem('downshift.settings') ?? '{}')
+    settings.promptDay = 20261015
+    settings.promptCount = settings.dailyCap
+    const raw = JSON.stringify(settings)
+    localStorage.setItem('downshift.settings', raw)
+    window.dispatchEvent(new StorageEvent('storage', { key: 'downshift.settings', newValue: raw }))
+  })
+  await nativeAdvance(page, 2)
+  expect(
+    await page.evaluate(() => JSON.parse(localStorage.getItem('downshift.settings') ?? '{}').promptCount),
+  ).toBe(3)
+  await expect(prompt(page)).toHaveCount(0)
+})
+
 test('routine check-in budget and cooldown survive a page reload', async ({ page }) => {
   await startConnected(page)
   await learnBaseline(page)

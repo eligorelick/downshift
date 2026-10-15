@@ -363,6 +363,10 @@ function onDue(due: Exclude<Due, 'none'>, t: number): void {
 function showPrompt(info: NudgePromptInfo): void {
   const t = now()
   const s = getSettings()
+  // A limit may have changed while the prompt waited for a quiet moment (including a storage update
+  // from another tab). Recheck before displaying or spending anything.
+  if (info.due === 'tense' && !budgetAllows(s, t, s.lastNudgeAt || NO_TIME, dayKey(new Date(t)))) return
+  if (info.due === 'high' && t - (s.lastHighNudgeAt || NO_TIME) < HIGH_EVERY_MS) return
   if (info.due === 'tense') {
     nudgedThisBlock = true
     updateSettings((x) => ({ ...budgetSpend(x, dayKey(new Date(t))), lastNudgeAt: t }))
