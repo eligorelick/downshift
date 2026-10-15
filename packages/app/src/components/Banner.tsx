@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { type AlertEvent, onAlert } from '../platform/alerts'
+import { type AlertEvent, onAlert, onClearAlerts } from '../platform/alerts'
 import { dismissStorageNotice, useStorageNotice } from '../state/settingsStore'
 import { Button } from './Button'
 import { refocusSoon } from './useStageFocus'
@@ -10,17 +10,30 @@ const SHOW_MS = 9000
 export function Banner() {
   const [items, setItems] = useState<AlertEvent[]>([])
   const storageNotice = useStorageNotice()
-  const timers = useRef(new Set<ReturnType<typeof setTimeout>>())
+  const timers = useRef(new Map<number, { timer: ReturnType<typeof setTimeout>; scope?: string }>())
 
   useEffect(() => {
     const pending = timers.current
     const off = onAlert((e) => {
       setItems((xs) => [...xs, e])
-      pending.add(setTimeout(() => setItems((xs) => xs.filter((x) => x.id !== e.id)), SHOW_MS))
+      const timer = setTimeout(() => {
+        pending.delete(e.id)
+        setItems((xs) => xs.filter((x) => x.id !== e.id))
+      }, SHOW_MS)
+      pending.set(e.id, { timer, scope: e.scope })
+    })
+    const offClear = onClearAlerts((scope) => {
+      setItems((xs) => (scope === undefined ? [] : xs.filter((x) => x.scope !== scope)))
+      for (const [id, entry] of pending) {
+        if (scope !== undefined && entry.scope !== scope) continue
+        clearTimeout(entry.timer)
+        pending.delete(id)
+      }
     })
     return () => {
       off()
-      for (const t of pending) clearTimeout(t)
+      offClear()
+      for (const entry of pending.values()) clearTimeout(entry.timer)
       pending.clear()
     }
   }, [])
@@ -55,6 +68,9 @@ export function Banner() {
             variant="ghost"
             onClick={() => {
               setItems((xs) => xs.filter((x) => x.id !== e.id))
+              const entry = timers.current.get(e.id)
+              if (entry) clearTimeout(entry.timer)
+              timers.current.delete(e.id)
               refocusSoon()
             }}
           >

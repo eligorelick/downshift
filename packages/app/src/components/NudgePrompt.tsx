@@ -12,13 +12,18 @@ interface Props {
 // section 4), so the prompt says that and asks how the person feels.
 export function NudgePrompt({ info, onAnswer }: Props) {
   const [rating, setRating] = useState<number | null>(null)
+  const time =
+    info.shownAt === undefined
+      ? null
+      : new Date(info.shownAt).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
 
   if (info.due === 'high') {
     return (
       <section className="card fc-prompt" data-due="high" aria-labelledby="fc-prompt-title">
+        {time && <p className="muted small">Check-in at {time}, based on readings then.</p>}
         <h2 id="fc-prompt-title">Check in</h2>
         <p>
-          Your heart rate has been at or above <strong className="num">{info.highLimit}</strong> bpm for ten
+          Your heart rate was at or above <strong className="num">{info.highLimit}</strong> bpm for ten
           minutes. Everything OK?
         </p>
         <p className="fc-medical">
@@ -36,10 +41,10 @@ export function NudgePrompt({ info, onAnswer }: Props) {
 
   return (
     <section className="card fc-prompt" data-due="tense" aria-labelledby="fc-prompt-title">
+      {time && <p className="muted small">Check-in at {time}, based on readings then.</p>}
       <p>
-        Your heart rate has been about <strong className="num">{info.rise}</strong> bpm above your recent
-        baseline for <strong className="num">{info.minutes}</strong> minutes. That can be effort as well as
-        tension.
+        Your heart rate was about <strong className="num">{info.rise}</strong> bpm above your recent baseline
+        for <strong className="num">{info.minutes}</strong> minutes. That can be effort as well as tension.
       </p>
       <h2 id="fc-prompt-title">Feeling tense?</h2>
       <RatingScale value={rating} onChange={setRating} />

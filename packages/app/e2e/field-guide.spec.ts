@@ -1,17 +1,35 @@
 import { expect, test } from '@playwright/test'
 import { advance, freshPage, go, startDemo } from './helpers'
 
-test('returning desktop Home shows every primary action and the complete daily tally without scrolling', async ({
+test('returning Home prioritizes the companion and keeps all modes and daily tallies reachable', async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await freshPage(page)
   await page.getByRole('button', { name: 'Got it', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Start companion', exact: true })).toBeInViewport()
   for (const name of ['Start focusing', 'Open workout', 'Start breathing']) {
-    await expect(page.getByRole('button', { name, exact: true })).toBeInViewport()
+    const action = page.getByRole('button', { name, exact: true })
+    await action.focus()
+    await expect(action).toBeInViewport()
   }
+  await page.getByRole('heading', { name: 'Today', exact: true }).scrollIntoViewIfNeeded()
   await expect(page.getByRole('heading', { name: 'Today', exact: true })).toBeInViewport()
   await expect(page.locator('.tally')).toBeInViewport({ ratio: 1 })
+})
+
+test('320 pixel enlarged text keeps Workout and Evidence within the viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await freshPage(page)
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
+  for (const route of ['workout', 'evidence']) {
+    await go(page, route)
+    await expect(page.locator('main h1').first()).toBeVisible()
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth - innerWidth),
+      route,
+    ).toBeLessThanOrEqual(1)
+  }
 })
 
 test('reduced motion keeps the breathing circle still while cues and controls remain usable', async ({

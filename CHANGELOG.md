@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
+## Unreleased
+
+- Home heart rate companion with independent Start/Stop, baseline learning, measured minute context and optional check-ins, without manual Focus blocks.
+- Persistent 15-minute Snooze and prompt limits; reset monitoring on signal gaps, contact loss or source changes, and pause during Workout, breathing and timed breaks.
+- Silent fresh defaults and optional system voice selection/preview, with local automatic selection, explicit remote-service labeling and immediate mute cancellation.
+- Updated Field Guide controls, accessibility, evidence and browser-background limitations. Heart rate remains advisory; no stress, focus or recovery score is inferred.
+
 ## [0.2.0] - 2026-10-12
 
 A full rebuild as a single TypeScript codebase that runs in the browser and as a Windows app. The 0.1.0 Windows Forms app is no longer in the main tree; its source is preserved in the first commit of the history ([`4ef898d`](https://github.com/eligorelick/downshift/tree/4ef898d5af933566dcfeb83621c86b761e31ac70)).

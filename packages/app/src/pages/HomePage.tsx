@@ -1,5 +1,6 @@
 import { dayKey, duration } from '@downshift/core'
 import { Button } from '../components/Button'
+import { CompanionPanel } from '../components/CompanionPanel'
 import { Icon } from '../components/Icon'
 import { refocusSoon } from '../components/useStageFocus'
 import { askNotifyPermission } from '../platform/notifyPermission'
@@ -80,6 +81,8 @@ export function HomePage() {
           </div>
         </section>
       )}
+
+      <CompanionPanel />
 
       <div className="mode-list">
         <section className="mode-row" aria-labelledby="mode-focus">

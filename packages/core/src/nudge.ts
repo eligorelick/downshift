@@ -6,11 +6,14 @@ export interface NudgeState {
   monitoring: boolean
   hasBaseline: boolean
   baseline: number
+  baselineMinutes: number // usable minutes in the lagged baseline window, including while collecting
   threshold: number
+  lastMinuteBpm: number | null // median of the most recently closed usable, sufficiently sampled minute
+  lastMinuteAt: number | null // start time of that minute; null when the closed minute was unusable
   rise: number // last full minute, relative to baseline
   runMinutes: number // consecutive minutes at or above the threshold
   highMinutes: number // consecutive minutes at or above the high limit
-  holdOff: boolean // counting is paused after a movement-shaped jump
+  holdOff: boolean // relative-rise counting is paused after an abrupt HR jump
   due: Due
 }
 
@@ -43,6 +46,7 @@ const HIGH_MINUTES_NEEDED = 10
 const BASELINE_WINDOW_MIN = 30
 const MIN_BASELINE_MINUTES = 5
 const MIN_SAMPLES_PER_MINUTE = 30
+const MAX_SAMPLE_GAP_MS = 15000
 
 // "No time yet". C# used long.MinValue / 4; any very negative safe number works because it is only
 // ever compared with `<` or `>=` and never added to, so it cannot overflow.
@@ -79,7 +83,10 @@ function emptyState(): NudgeState {
     monitoring: false,
     hasBaseline: false,
     baseline: 0,
+    baselineMinutes: 0,
     threshold: 0,
+    lastMinuteBpm: null,
+    lastMinuteAt: null,
     rise: 0,
     runMinutes: 0,
     highMinutes: 0,
@@ -88,10 +95,10 @@ function emptyState(): NudgeState {
   }
 }
 
-// Decides when a heart rate, assumed seated (the app can't tell), has been raised long enough to ask about.
-// Stress without movement adds roughly 4-21 bpm for minutes; standing up adds about 16 bpm within seconds.
-// So the rule wants a modest rise held for minutes, on per-minute medians since wrist HR is noisy second to
-// second, and a sharp jump restarts the count. Times are ms on one clock. Evidence: docs/evidence.md.
+// Applies product heuristics for sustained heart-rate changes, using per-minute medians. An abrupt HR jump
+// pauses the relative-rise count; heart rate alone cannot establish movement or stress. Thresholds are
+// configurable check-in rules, not validated measurements of either. Times are ms on one clock.
+// Evidence and limitations: docs/evidence.md.
 export class NudgeDetector {
   static readonly SETTLE_START_MIN = 5
   static readonly SETTLE_RESUME_MIN = 3
@@ -181,11 +188,18 @@ export class NudgeDetector {
 
   push(t: number, bpm: number): NudgeState {
     if (!(bpm >= MIN_BPM && bpm <= MAX_BPM) || !Number.isFinite(t)) return emptyState()
-    // Out-of-order readings would corrupt the minute buckets; drop them like RestCoach does.
-    if (t < this.lastT) return emptyState()
+    // A timestamp identifies one sample; duplicates must not inflate minute coverage.
+    if (t <= this.lastT) return emptyState()
+    const gap = Number.isFinite(this.lastT) && t - this.lastT > MAX_SAMPLE_GAP_MS
+    if (gap) {
+      // Invalidate both sides of a gap across a minute boundary, including any delayed minute close.
+      this.fillingUsable = false
+      this.raw = []
+      this.smooth = []
+    }
     this.lastT = t
 
-    // Movement shape: a rise of MOVE_JUMP_BPM or more inside MOVE_WINDOW_SEC, judged on a 3-point median.
+    // HR-jump heuristic: a rise of MOVE_JUMP_BPM or more inside MOVE_WINDOW_SEC, on a 3-point median.
     this.raw.push({ t, v: bpm })
     while (this.raw.length > 3 || (this.raw[0] !== undefined && t - this.raw[0].t > 5000)) this.raw.shift()
     const smoothed = roundHalfEven(median(this.raw.map((p) => p.v)))
@@ -201,7 +215,7 @@ export class NudgeDetector {
       if (this.fillingIndex !== NO_MINUTE) due = this.closeMinute()
       this.fillingIndex = index
       this.filling = []
-      this.fillingUsable = this._monitoring && t >= this.settleUntil
+      this.fillingUsable = !gap && this._monitoring && t >= this.settleUntil
       this.fillingHeld = t < this.moveHoldUntil
     }
     this.filling.push(bpm)
@@ -259,8 +273,12 @@ export class NudgeDetector {
 
     this._last.hasBaseline = has
     this._last.baseline = baseline
+    this._last.baselineMinutes = window.length
     this._last.threshold = threshold
-    this._last.rise = has && done.ok ? done.value - baseline : 0
+    const measured = done.ok && done.usable
+    this._last.lastMinuteBpm = measured ? done.value : null
+    this._last.lastMinuteAt = measured ? done.index * 60000 : null
+    this._last.rise = has && measured ? done.value - baseline : 0
     this._last.runMinutes = run
     this._last.highMinutes = high
 

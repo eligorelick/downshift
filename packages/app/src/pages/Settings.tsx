@@ -4,6 +4,7 @@ import { Button } from '../components/Button'
 import { Card } from '../components/Card'
 import { ConfirmDialog } from '../components/ConfirmDialog'
 import { Segmented } from '../components/Segmented'
+import { VoiceSettings } from '../components/VoiceSettings'
 import { all } from '../state/logStore'
 import { updateSettings, useSettings } from '../state/settingsStore'
 import '../styles/settings.css'
@@ -129,12 +130,7 @@ export function Settings() {
           unit="%"
           onChange={(volume) => set({ volume })}
         />
-        <Toggle
-          label="Spoken cues"
-          hint="Read breathing and rest cues aloud."
-          checked={s.voice}
-          onChange={(voice) => set({ voice })}
-        />
+        <VoiceSettings />
         <Toggle
           label="Tones"
           hint="Soft tones that mark each breath, and the chimes in Workout."
@@ -194,8 +190,8 @@ export function Settings() {
         </Choice>
         {s.nudgeMode === 'always' && (
           <p className="muted small">
-            Always also watches outside focus sessions, when you may be moving, so expect more prompts that
-            aren't about tension.
+            The Home companion is on. Use its Start, Snooze and Stop controls while working or studying.
+            Movement can raise heart rate too; your response decides what to do.
           </p>
         )}
         <p className="muted small">

@@ -70,14 +70,14 @@ describe('NudgeDetector', () => {
     expect(a.length).toBe(0)
   })
 
-  test('standing up briefly: no nudge', () => {
+  test('brief abrupt +16 bpm rise: no nudge', () => {
     const d = calm()
     const a = run(d, 30 * M, 30 * M + 30, (s) => rest(s) + (s - 30 * M < 8 ? (s - 30 * M) * 2 : 16))
     a.push(...run(d, 30 * M + 30, 40 * M, rest))
     expect(a.length).toBe(0)
   })
 
-  test('six minutes of walking: sharp jump is treated as movement, no nudge', () => {
+  test('six-minute abrupt rise: the HR-jump heuristic holds off a nudge', () => {
     const d = calm()
     const a = run(d, 30 * M, 30 * M + 30, (s) => rest(s) + 20)
     expect(d.last.holdOff).toBe(true)
@@ -122,7 +122,7 @@ describe('NudgeDetector', () => {
     expect(d.last.hasBaseline).toBe(false)
   })
 
-  test('a break with movement: no nudge after, and break minutes stay out of the baseline', () => {
+  test('a paused interval: no nudge after, and paused minutes stay out of the baseline', () => {
     const d = calm()
     d.stopMonitoring()
     const a = run(d, 30 * M, 35 * M, () => 100)
@@ -243,12 +243,12 @@ describe('NudgeDetector bad input', () => {
     }
     const fresh = session(new NudgeDetector(settings()))
     expect(fresh.length).toBe(1)
-    // A different earlier session: a much higher resting rate that ends in a sudden jump (a movement hold-off).
+    // A different earlier session: a much higher resting rate that ends in a sudden HR jump and hold-off.
     const d = new NudgeDetector(settings())
     d.startMonitoring(0, NudgeDetector.SETTLE_START_MIN)
     run(d, 0, 40 * M + 30, (s) => (s < 40 * M ? rest(s) + 30 : rest(s) + 60))
     d.reset()
-    // Its baseline minutes, smoothed rate or movement hold-off left over would change when, or whether, it
+    // Its baseline minutes, smoothed rate or HR-jump hold-off left over would change when, or whether, it
     // fires. (The half-filled minute is also cleared, but startMonitoring discards it anyway.)
     expect(show(session(d))).toBe(show(fresh))
   })

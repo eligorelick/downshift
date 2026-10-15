@@ -19,13 +19,15 @@ import {
   suggestBreak,
 } from '@downshift/core'
 import { useSyncExternalStore } from 'react'
-import { alert } from '../platform/alerts'
+import { alert, clearAlerts, stopTones } from '../platform/alerts'
+import { stopSpeaking } from '../platform/speech'
 import { acquireWakeLock, releaseWakeLock } from '../platform/wakeLock'
 import { now } from '../state/clock'
-import { getHeartRate, onHeartRate } from '../state/hrStore'
+import { STALE_MS, getHeartRate, onHeartRate, subscribeHeartRate } from '../state/hrStore'
 import * as logStore from '../state/logStore'
 import { getSettings, subscribeSettings, updateSettings } from '../state/settingsStore'
-import { isBreathing, startBreathe } from './breathSession'
+import { isBreathing, startBreathe, subscribeBreathing } from './breathSession'
+import { getStage, subscribeWorkout } from './workoutSession'
 
 // 0.1.0 held a prompt until the user had paused for 1.5 s so it never lands mid-sentence, and showed it
 // after 20 s regardless. The browser only sees activity in this window, not system-wide as 0.1.0 did.
@@ -33,6 +35,8 @@ const QUIET_MS = 1500
 const MAX_WAIT_MS = 20_000
 // A high-heart-rate check-in is a safety question, so it is not rationed by the daily cap; once an hour at most.
 const HIGH_EVERY_MS = 3_600_000
+// A product choice to give a person room to continue; not a validated physiological interval.
+const COMPANION_SNOOZE_MS = 15 * 60_000
 // Based on a lunchtime park walk study (Sianoja 2018, docs/evidence.md). The minutes match the preset's long
 // break so the advice never promises more time than the timer gives.
 const outsideNote = (longBreakMin: number): string =>
@@ -76,6 +80,29 @@ export interface FocusView {
   prompt: NudgePromptInfo | null
   // True after a session of at least a minute ends, until the sharpness question is answered or skipped.
   askSharpness: boolean
+  companion: CompanionView
+}
+
+export interface CompanionView {
+  enabled: boolean
+  status:
+    | 'stopped'
+    | 'snoozed'
+    | 'workout'
+    | 'breathing'
+    | 'break'
+    | 'waiting'
+    | 'lost'
+    | 'contact'
+    | 'learning'
+    | 'watching'
+  demo: boolean
+  baseline: number | null
+  baselineMinutes: number
+  minuteBpm: number | null
+  minuteAt: number | null
+  snoozedUntil: number
+  cooldownUntil: number
 }
 
 // Lives outside React so the session keeps running while another page is shown.
@@ -114,9 +141,12 @@ let breakStartedAt = 0
 let nudgedThisBlock = false
 let prompt: NudgePromptInfo | null = null
 let pendingDue: { info: NudgePromptInfo; since: number } | null = null
-let lastPromptAt = NO_TIME
-let lastHighAt = NO_TIME
 let lastActivity = NO_TIME
+let lastGoodAt: number | null = null
+let sourceKey = ''
+let signalReason: 'waiting' | 'lost' | 'contact' = 'waiting'
+let companionTimer: ReturnType<typeof setInterval> | null = null
+let monitoringConfig = ''
 let talliedMs = 0
 let talliedBlocks = 0
 const subs = new Set<() => void>()
@@ -156,6 +186,7 @@ export function getFocus(): FocusView {
         : null,
     prompt,
     askSharpness: sharpnessFor !== null,
+    companion: companionView(),
   }
   return cached
 }
@@ -181,23 +212,124 @@ export function focusTimes(t: number): { remainingMs: number; workedMs: number }
 /* ---------- nudge monitoring ---------- */
 
 function wantMonitoring(): boolean {
-  const mode = getSettings().nudgeMode
+  const s = getSettings()
+  if (s.nudgeSnoozedUntil > now() || getStage() === 'active' || isBreathing()) return false
+  const mode = s.nudgeMode
   if (mode === 'always') return clock.phase !== 'break' && clock.phase !== 'backDue'
   return mode === 'focus' && active && (clock.phase === 'work' || clock.phase === 'breakDue')
+}
+
+function clearNudge(): void {
+  pendingDue = null
+  prompt = null
+  clearAlerts('nudge')
+}
+
+function resetMonitoring(reason: typeof signalReason = 'waiting'): void {
+  detector.reset()
+  lastGoodAt = null
+  signalReason = reason
+  clearNudge()
+}
+
+function companionView(): CompanionView {
+  const s = getSettings()
+  const hr = getHeartRate()
+  let status: CompanionView['status'] = 'stopped'
+  if (s.nudgeMode === 'always') {
+    if (s.nudgeSnoozedUntil > now()) status = 'snoozed'
+    else if (getStage() === 'active') status = 'workout'
+    else if (isBreathing()) status = 'breathing'
+    else if (clock.phase === 'break' || clock.phase === 'backDue') status = 'break'
+    else if (lastGoodAt === null) status = signalReason
+    else status = detector.last.hasBaseline ? 'watching' : 'learning'
+  }
+  const v = detector.last
+  return {
+    enabled: s.nudgeMode === 'always',
+    status,
+    demo: hr.kind === 'simulated',
+    baseline: v.hasBaseline ? Math.round(v.baseline) : null,
+    baselineMinutes: v.baselineMinutes,
+    minuteBpm: v.lastMinuteBpm,
+    minuteAt: v.lastMinuteAt,
+    snoozedUntil: s.nudgeSnoozedUntil,
+    cooldownUntil: s.lastNudgeAt ? s.lastNudgeAt + s.waitMin * 60_000 : 0,
+  }
+}
+
+function reconcileSignal(t: number): void {
+  const hr = getHeartRate()
+  const key = `${hr.kind ?? ''}:${hr.device?.id ?? ''}`
+  if (key !== sourceKey) {
+    const lost = hr.kind === null && (lastGoodAt !== null || signalReason === 'lost')
+    sourceKey = key
+    resetMonitoring(lost ? 'lost' : 'waiting')
+  }
+  if (!wantMonitoring()) {
+    if (detector.monitoring || lastGoodAt !== null || prompt || pendingDue) resetMonitoring()
+    return
+  }
+  if (hr.state !== 'connected') {
+    if (lastGoodAt !== null || detector.monitoring || prompt || pendingDue) resetMonitoring('lost')
+    return
+  }
+  if (hr.contact === false) {
+    resetMonitoring('contact')
+    return
+  }
+  // Only the explicitly labeled simulator may replay synthetic history after a clock jump. Real
+  // Bluetooth gaps are never filled, and a connected link cannot keep an old measurement usable.
+  if (lastGoodAt !== null && hr.kind !== 'simulated' && t - lastGoodAt > STALE_MS) resetMonitoring('lost')
 }
 
 function applyMonitoring(settleMin: number): void {
   const want = wantMonitoring()
   if (want && !detector.monitoring) detector.startMonitoring(now(), settleMin)
-  else if (!want && detector.monitoring) detector.stopMonitoring()
+  else if (!want && detector.monitoring) resetMonitoring()
 }
 
-function onReading(r: { t: number; bpm: number }): void {
+function onReading(r: { t: number; bpm: number; contact?: boolean }): void {
+  const hr = getHeartRate()
+  const key = `${hr.kind ?? ''}:${hr.device?.id ?? ''}`
+  if (key !== sourceKey) {
+    sourceKey = key
+    resetMonitoring()
+  }
   if (!wantMonitoring()) return
+  if (hr.state !== 'connected') {
+    resetMonitoring('lost')
+    emit()
+    return
+  }
+  // Reading subscribers run before hrStore updates its snapshot; validate this event's contact/time.
+  if (r.contact === false) {
+    resetMonitoring('contact')
+    emit()
+    return
+  }
+  const t = now()
+  if (
+    !Number.isFinite(r.t) ||
+    !Number.isFinite(r.bpm) ||
+    r.bpm < 25 ||
+    r.bpm > 240 ||
+    r.t > t + 1000 ||
+    (hr.kind !== 'simulated' && t - r.t > STALE_MS) ||
+    (lastGoodAt !== null && r.t <= lastGoodAt)
+  )
+    return
+  // A resumed tab may receive its first packet before its suspended interval callback runs. Expire
+  // the old baseline against that packet too, before replacing the timestamp used by the timer guard.
+  if (lastGoodAt !== null && hr.kind !== 'simulated' && r.t - lastGoodAt > STALE_MS) resetMonitoring('lost')
   if (!detector.monitoring) applyMonitoring(NudgeDetector.SETTLE_START_MIN)
   const st = detector.push(r.t, r.bpm)
+  if (!st.valid) return
+  lastGoodAt = r.t
+  signalReason = 'waiting'
   if (st.due !== 'none') onDue(st.due, r.t)
   if (!active) checkPending(now())
+  emit()
 }
 
 function onDue(due: Exclude<Due, 'none'>, t: number): void {
@@ -210,8 +342,8 @@ function onDue(due: Exclude<Due, 'none'>, t: number): void {
   if (busy) return
   const s = getSettings()
   if (clock.phase === 'break' || clock.phase === 'backDue') return
-  if (due === 'tense' && !budgetAllows(s, t, lastPromptAt, dayKey(new Date(t)))) return
-  if (due === 'high' && t - lastHighAt < HIGH_EVERY_MS) return
+  if (due === 'tense' && !budgetAllows(s, t, s.lastNudgeAt || NO_TIME, dayKey(new Date(t)))) return
+  if (due === 'high' && t - (s.lastHighNudgeAt || NO_TIME) < HIGH_EVERY_MS) return
   if (due === 'high') dismissPrompt()
   const v = detector.last
   pendingDue = {
@@ -232,23 +364,25 @@ function showPrompt(info: NudgePromptInfo): void {
   const t = now()
   const s = getSettings()
   if (info.due === 'tense') {
-    lastPromptAt = t
     nudgedThisBlock = true
-    updateSettings((x) => budgetSpend(x, dayKey(new Date(t))))
+    updateSettings((x) => ({ ...budgetSpend(x, dayKey(new Date(t))), lastNudgeAt: t }))
   } else {
-    lastHighAt = t
+    updateSettings({ lastHighNudgeAt: t })
   }
   prompt = { ...info, shownAt: t }
   // Silent by default. Off the Focus page (or tab) it shows a banner or notification; with sound on it also
   // plays a tone, and on the Focus page only the tone, since the card is already in view.
-  const away = document.hidden || !location.hash.startsWith('#focus')
+  const away =
+    document.hidden ||
+    (!location.hash.startsWith('#focus') && !location.hash.startsWith('#home') && location.hash !== '')
   if (s.promptSound || away) {
     alert({
       title: info.due === 'tense' ? 'Feeling tense?' : `Heart rate at or above ${info.highLimit} bpm`,
-      body: 'Open Focus to answer.',
+      body: 'Open Downshift Home or Focus to check in.',
       sound: s.promptSound,
       vibrate: false,
       banner: away,
+      scope: 'nudge',
     })
   }
   emit()
@@ -258,6 +392,7 @@ export function answerPrompt(answer: NudgeAnswer, rating: number | null = null):
   const p = prompt
   if (!p) return
   prompt = null
+  clearAlerts('nudge')
   void logStore.add({
     type: 'nudge',
     t: p.shownAt ?? now(),
@@ -271,6 +406,38 @@ export function answerPrompt(answer: NudgeAnswer, rating: number | null = null):
   })
   emit()
   if (answer === 'breathe') startBreathe({ source: 'nudge', tenseBefore: rating ?? undefined })
+  // The person supplied context the sensor cannot see. Learn again rather than repeatedly interpreting
+  // the same episode as tension after they said they were fine or moving.
+  if (answer === 'fine' || answer === 'moving') {
+    resetMonitoring()
+    emit()
+  }
+}
+
+export function startCompanion(): void {
+  if (getSettings().nudgeMode === 'always') return
+  updateSettings({ nudgeMode: 'always', nudgeSnoozedUntil: 0 })
+}
+
+export function stopCompanion(): void {
+  resetMonitoring()
+  stopSpeaking()
+  stopTones()
+  updateSettings({ nudgeMode: 'off', nudgeSnoozedUntil: 0 })
+}
+
+export function snoozeCompanion(): void {
+  if (getSettings().nudgeMode !== 'always') return
+  resetMonitoring()
+  stopSpeaking()
+  stopTones()
+  updateSettings({ nudgeSnoozedUntil: now() + COMPANION_SNOOZE_MS })
+}
+
+export function resumeCompanion(): void {
+  if (getSettings().nudgeMode !== 'always') return
+  resetMonitoring()
+  updateSettings({ nudgeSnoozedUntil: 0 })
 }
 
 /* ---------- ticking ---------- */
@@ -284,16 +451,53 @@ if (typeof window !== 'undefined') {
     window.addEventListener(ev, noteActivity, { passive: true })
   }
   onHeartRate(onReading)
-  // Switching the nudge mode in Settings takes effect at once.
-  subscribeSettings(() => {
-    if (!wantMonitoring() && detector.monitoring) detector.stopMonitoring()
+  const settingsChanged = () => {
+    const s = getSettings()
+    const config = `${s.nudgeMode}:${s.nudgeDelta}:${s.nudgeMinutes}:${s.highLimit}`
+    if (config !== monitoringConfig) {
+      monitoringConfig = config
+      resetMonitoring()
+    }
+    if (s.nudgeMode === 'always' && companionTimer === null) companionTimer = setInterval(monitorTick, 1000)
+    else if (s.nudgeMode !== 'always' && companionTimer !== null) {
+      clearInterval(companionTimer)
+      companionTimer = null
+    }
+    reconcileSignal(now())
+    emit()
+  }
+  subscribeSettings(settingsChanged)
+  subscribeHeartRate(() => {
+    reconcileSignal(now())
+    emit()
   })
+  subscribeWorkout(() => {
+    reconcileSignal(now())
+    emit()
+  })
+  subscribeBreathing(() => {
+    reconcileSignal(now())
+    emit()
+  })
+  document.addEventListener('visibilitychange', monitorTick)
+  window.addEventListener('pageshow', monitorTick)
+  settingsChanged()
+}
+
+function monitorTick(): void {
+  reconcileSignal(now())
+  checkPending(now())
+  emit()
 }
 
 // Shows a due prompt once the person pauses. Runs on the session tick, and on every reading outside a
 // session so that "Always" mode can prompt when no focus session is running.
 function checkPending(t: number): void {
   if (!pendingDue) return
+  if (lastGoodAt === null) {
+    pendingDue = null
+    return
+  }
   const inBreak = clock.phase === 'break' || clock.phase === 'backDue'
   if (isBreathing()) {
     // Never interrupt a breathing session; the wait starts again once it ends.
@@ -310,7 +514,7 @@ function checkPending(t: number): void {
 function tick(): void {
   const t = now()
   const s = getSettings()
-  checkPending(t)
+  monitorTick()
   const ev = clock.tick(t)
   if (ev === 'headsUp') {
     headsUp = true
@@ -404,14 +608,16 @@ export function startBreak(): void {
   // Heart rate over this block is shown as context only; the person's answer decides the break.
   let ctx: BlockHrContext | null = null
   const v = detector.last
-  if (v.hasBaseline) {
+  if (v.hasBaseline || nudgedThisBlock) {
     ctx = {
       nudgedThisBlock,
-      minutesRaised: minutesRaised(
-        detector.minuteMediansSince(clock.blockStartedAt()),
-        v.baseline,
-        getSettings().nudgeDelta,
-      ),
+      minutesRaised: v.hasBaseline
+        ? minutesRaised(
+            detector.minuteMediansSince(clock.blockStartedAt()),
+            v.baseline,
+            getSettings().nudgeDelta,
+          )
+        : 0,
     }
   }
   hrNote = blockHrNote(ctx)
@@ -464,6 +670,7 @@ export function discardFocus(): void {
   // An 'Always' nudge can be open with no session running; answering it would write into the wiped History.
   pendingDue = null
   prompt = null
+  stopCompanion()
   // Before the active check: a session that has already ended can still have its sharpness question open,
   // and "Delete all data" must take that card away too.
   sharpnessFor = null

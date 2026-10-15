@@ -1,5 +1,5 @@
 .home {
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 .home-head {
   display: flex;
@@ -9,7 +9,7 @@
   gap: var(--space-4);
 }
 .home .page-head h1 {
-  font-size: clamp(2rem, 6vw + 1rem, 5.5rem);
+  font-size: clamp(2rem, 4vw + 1rem, 3.5rem);
   overflow-wrap: anywhere;
 }
 .home .page-head {
@@ -18,7 +18,7 @@
 }
 .home .page-head p {
   font-family: var(--font-editorial);
-  font-size: clamp(1.5rem, 2.7vw, 2.5rem);
+  font-size: clamp(1.5rem, 2vw, 1.875rem);
   line-height: 1.15;
   color: var(--accent-text);
 }
@@ -89,7 +89,7 @@
   min-width: 0;
 }
 .mode-copy h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 3vw, 2.5rem);
   letter-spacing: -0.04em;
   line-height: 1;
   overflow-wrap: anywhere;
@@ -164,7 +164,7 @@
     grid-template-columns: 60px minmax(0, 1fr) minmax(190px, 21%);
     align-items: center;
     column-gap: var(--space-5);
-    min-height: 174px;
+    min-height: 138px;
   }
   .mode-row > .btn {
     grid-column: 3;

@@ -92,9 +92,17 @@ export async function saveSession(e: {
 // True only while the pacer runs. The setup and "how tense now" screens do not count, so a prompt (such as
 // the high heart rate check-in) is not held back while someone sits on them.
 let running = false
+const breathingSubs = new Set<() => void>()
 
 export function setBreathing(on: boolean): void {
+  if (running === on) return
   running = on
+  for (const cb of [...breathingSubs]) cb()
+}
+
+export function subscribeBreathing(cb: () => void): () => void {
+  breathingSubs.add(cb)
+  return () => breathingSubs.delete(cb)
 }
 
 export function isBreathing(): boolean {

@@ -28,6 +28,7 @@ export interface Settings {
   pattern: PatternKey
   breathMinutes: 2 | 5
   voice: boolean
+  voiceURI: string
   tones: boolean
   tutorialDone: boolean
   mute: boolean
@@ -37,6 +38,9 @@ export interface Settings {
   paired: DeviceRef | null
   promptDay: number
   promptCount: number
+  lastNudgeAt: number
+  lastHighNudgeAt: number
+  nudgeSnoozedUntil: number
   today: { key: number; focusBlocks: number; breaths: number; focusMs: number; sets: number }
   welcomed: boolean
 }
@@ -59,7 +63,7 @@ export function defaultSettings(): Settings {
     promptSound: false,
     preset: 'school',
     blockMin: { school: 25, work: 45 },
-    breakSound: true,
+    breakSound: false,
     askFeeling: true,
     askSharpness: true,
     goal: 'hypertrophy',
@@ -69,16 +73,20 @@ export function defaultSettings(): Settings {
     breathingBetweenSets: false,
     pattern: 'slow46',
     breathMinutes: 5,
-    voice: true,
-    tones: true,
+    voice: false,
+    voiceURI: '',
+    tones: false,
     tutorialDone: false,
-    mute: false,
+    mute: true,
     vibrate: true,
     volume: 70,
     theme: 'system',
     paired: null,
     promptDay: 0,
     promptCount: 0,
+    lastNudgeAt: 0,
+    lastHighNudgeAt: 0,
+    nudgeSnoozedUntil: 0,
     today: { key: 0, focusBlocks: 0, breaths: 0, focusMs: 0, sets: 0 },
     welcomed: false,
   }
@@ -94,6 +102,10 @@ function pick<T extends string>(v: unknown, allowed: readonly T[], fallback: T):
 
 function whole(v: unknown, fallback: number): number {
   return typeof v === 'number' && Number.isFinite(v) ? Math.round(v) : fallback
+}
+
+function timestamp(v: unknown): number {
+  return typeof v === 'number' && Number.isSafeInteger(v) && v >= 0 ? v : 0
 }
 
 function readPaired(v: unknown): DeviceRef | null {
@@ -133,11 +145,19 @@ export function normalize(s: Settings): Settings {
     },
     pattern: pick(s.pattern, PATTERNS, d.pattern),
     breathMinutes: whole(s.breathMinutes, d.breathMinutes) <= 3 ? 2 : 5,
+    voiceURI:
+      // biome-ignore lint/suspicious/noControlCharactersInRegex: reject control characters in stored voice identifiers.
+      typeof s.voiceURI === 'string' && s.voiceURI.length <= 1024 && !/[\u0000-\u001f\u007f]/.test(s.voiceURI)
+        ? s.voiceURI
+        : '',
     volume: clamp(whole(s.volume, d.volume), 0, 100),
     theme: pick(s.theme, THEMES, d.theme),
     paired: readPaired(s.paired),
     promptDay: Math.max(0, whole(s.promptDay, 0)),
     promptCount: Math.max(0, whole(s.promptCount, 0)),
+    lastNudgeAt: timestamp(s.lastNudgeAt),
+    lastHighNudgeAt: timestamp(s.lastHighNudgeAt),
+    nudgeSnoozedUntil: timestamp(s.nudgeSnoozedUntil),
     today: {
       key: Math.max(0, whole(s.today?.key, 0)),
       focusBlocks: Math.max(0, whole(s.today?.focusBlocks, 0)),
@@ -209,6 +229,9 @@ export function resetPreferences(s: Settings): Settings {
     today: { ...s.today },
     promptDay: s.promptDay,
     promptCount: s.promptCount,
+    lastNudgeAt: s.lastNudgeAt,
+    lastHighNudgeAt: s.lastHighNudgeAt,
+    nudgeSnoozedUntil: s.nudgeSnoozedUntil,
   }
 }
 
