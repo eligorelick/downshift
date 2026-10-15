@@ -15,6 +15,49 @@ import {
 const MIN = 60000
 
 describe('settings persistence', () => {
+  test('fresh and older partial settings stay silent until sound is explicitly enabled', () => {
+    for (const s of [defaultSettings(), parseSettings('{"version":1}')]) {
+      expect([s.mute, s.voice, s.tones, s.breakSound]).toEqual([true, false, false, false])
+    }
+    const saved = parseSettings('{"version":1,"mute":false,"voice":true,"tones":true,"breakSound":true}')
+    expect([saved.mute, saved.voice, saved.tones, saved.breakSound]).toEqual([false, true, true, true])
+  })
+
+  test('voice choice and companion timing survive a version-one round trip', () => {
+    const s = parseSettings(
+      JSON.stringify({
+        version: 1,
+        voiceURI: 'local:voice',
+        lastNudgeAt: 123,
+        lastHighNudgeAt: 456,
+        nudgeSnoozedUntil: 789,
+      }),
+    )
+    expect(parseSettings(serializeSettings(s))).toMatchObject({
+      voiceURI: 'local:voice',
+      lastNudgeAt: 123,
+      lastHighNudgeAt: 456,
+      nudgeSnoozedUntil: 789,
+    })
+  })
+
+  test('companion timestamps reject nonfinite, unsafe, negative, or fractional numbers', () => {
+    for (const value of [-1, 1.5, Number.NaN, Number.POSITIVE_INFINITY, Number.MAX_SAFE_INTEGER + 1]) {
+      const s = normalize({
+        ...defaultSettings(),
+        lastNudgeAt: value,
+        lastHighNudgeAt: value,
+        nudgeSnoozedUntil: value,
+      })
+      expect([s.lastNudgeAt, s.lastHighNudgeAt, s.nudgeSnoozedUntil]).toEqual([0, 0, 0])
+    }
+  })
+
+  test('invalid or unbounded voice identifiers fall back to automatic local selection', () => {
+    for (const voiceURI of ['x'.repeat(1025), 'bad\u0000voice', 12, null]) {
+      expect(parseSettings(JSON.stringify({ version: 1, voiceURI })).voiceURI).toBe('')
+    }
+  })
   test('defaults round-trip', () => {
     const d = defaultSettings()
     expect(parseSettings(serializeSettings(d))).toEqual(d)
@@ -149,6 +192,16 @@ describe('normalize', () => {
 })
 
 describe('resetPreferences', () => {
+  test('keeps persisted nudge cooldowns and snooze when preferences reset', () => {
+    const r = resetPreferences({
+      ...defaultSettings(),
+      voiceURI: 'local:voice',
+      lastNudgeAt: 123,
+      lastHighNudgeAt: 456,
+      nudgeSnoozedUntil: 789,
+    })
+    expect(r).toMatchObject({ voiceURI: '', lastNudgeAt: 123, lastHighNudgeAt: 456, nudgeSnoozedUntil: 789 })
+  })
   test('keeps identity and tallies', () => {
     const s = defaultSettings()
     s.paired = { id: 'a', name: 'Strap' }

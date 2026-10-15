@@ -1,0 +1,37 @@
+.voice-settings {
+  display: grid;
+  gap: var(--space-2);
+  max-width: 54rem;
+}
+.voice-controls {
+  padding-left: calc(24px + var(--space-3));
+}
+.voice-controls label {
+  font-weight: 600;
+}
+.voice-controls select {
+  width: 100%;
+  min-height: var(--tap);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  padding: var(--space-2);
+  font: inherit;
+}
+.voice-status,
+.voice-quality {
+  margin: 0;
+  font-size: var(--text-sm);
+  padding-left: calc(24px + var(--space-3));
+}
+.voice-status p {
+  margin: 0 0 var(--space-1);
+}
+@media (max-width: 480px) {
+  .voice-controls,
+  .voice-status,
+  .voice-quality {
+    padding-left: 0;
+  }
+}

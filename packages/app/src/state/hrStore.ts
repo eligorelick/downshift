@@ -208,7 +208,7 @@ export function useLiveBpm(): number | null {
   const hr = useHeartRate()
   const t = useNow(1000)
   const fresh = hr.lastAt !== null && t - hr.lastAt <= STALE_MS
-  return hr.state === 'connected' && hr.bpm !== null && fresh ? hr.bpm : null
+  return hr.state === 'connected' && hr.contact !== false && hr.bpm !== null && fresh ? hr.bpm : null
 }
 
 export function useHeartRate(): HeartRateSnapshot {

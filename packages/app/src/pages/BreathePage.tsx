@@ -7,6 +7,7 @@ import { RatingScale } from '../components/RatingScale'
 import { Segmented } from '../components/Segmented'
 import { TechniqueGuide } from '../components/TechniqueGuide'
 import { refocusSoon, useStageFocus } from '../components/useStageFocus'
+import { stopTones } from '../platform/alerts'
 import { stopSpeaking } from '../platform/speech'
 import { acquireWakeLock, releaseWakeLock } from '../platform/wakeLock'
 import {
@@ -126,6 +127,7 @@ function Flow({ source: source0, pattern0, minutes0, tense0 }: FlowProps) {
       setBreathing(false)
       void releaseWakeLock('breathe')
       stopSpeaking()
+      stopTones()
     }
   }, [stage])
 
@@ -330,6 +332,10 @@ function Flow({ source: source0, pattern0, minutes0, tense0 }: FlowProps) {
               onChange={(p) => choose(p, minutes)}
             />
             <p className="pattern-note">{pattern.note}</p>
+            <p className="muted small">
+              Keep each breath gentle and unforced. Stop if you feel dizzy or uncomfortable, and return to
+              your normal breathing.
+            </p>
             <Segmented
               label="Length"
               value={String(minutes) as '2' | '5'}

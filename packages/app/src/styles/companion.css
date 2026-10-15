@@ -1,0 +1,80 @@
+.companion {
+  border-block: 1px solid var(--border-strong);
+  padding-block: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.companion-head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+}
+.companion h2 {
+  font-size: 1.875rem;
+  line-height: 1.15;
+}
+.companion-kicker {
+  color: var(--text-muted);
+  font-size: var(--text-xs);
+  margin-bottom: var(--space-2);
+}
+.companion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  max-width: 100%;
+}
+.companion-actions .btn {
+  min-width: 0;
+  max-width: 100%;
+  padding-inline: var(--space-3);
+  font-size: var(--text-sm);
+}
+.companion-status {
+  font-weight: 700;
+  color: var(--accent-text);
+}
+.companion-status span {
+  font-weight: 400;
+}
+.companion-description {
+  max-width: 85ch;
+}
+.companion-measures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4) var(--space-7);
+  margin: 0;
+}
+.companion-measures dt {
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+.companion-measures dd {
+  margin: 0;
+  font-size: 1.5rem;
+}
+.companion-details {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+.companion-details summary {
+  cursor: pointer;
+  min-height: var(--tap);
+  align-content: center;
+}
+.companion-details p {
+  margin-block: var(--space-3);
+  max-width: 85ch;
+}
+.companion-foot {
+  max-width: 85ch;
+}
+.companion .fc-prompt {
+  margin-block: var(--space-2);
+}

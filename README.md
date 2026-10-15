@@ -1,6 +1,6 @@
 # Downshift
 
-Focus blocks, rest timers and guided breathing, with optional live heart rate from a WHOOP or any other Bluetooth heart rate monitor.
+A quiet heart rate companion for work or study, plus focus blocks, rest timers and guided breathing. Connect a WHOOP or another Bluetooth heart rate monitor for optional check-ins.
 
 [![CI](https://github.com/eligorelick/downshift/actions/workflows/ci.yml/badge.svg)](https://github.com/eligorelick/downshift/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -8,21 +8,29 @@ Focus blocks, rest timers and guided breathing, with optional live heart rate fr
 **[Open the web app](https://eligorelick.github.io/downshift/)** · **[Windows release status](https://github.com/eligorelick/downshift/releases)**
 
 <p>
-  <img src="docs/images/home-light.png" alt="Field Guide: Downshift Home on desktop in the light theme" width="900">
+  <img src="docs/images/home-light.png" alt="Downshift Home with the independent heart rate companion and existing modes, light theme" width="900">
 </p>
+
+<p>
+  <img src="docs/images/companion-checkin-dark.png" alt="Heart rate companion check-in using clearly labeled demo data, dark theme" width="280">
+  <img src="docs/images/voice-settings-dark.png" alt="Muted voice settings with local platform voice selection and optional preview, dark theme" width="280">
+</p>
+
+The companion and voice images show narrow layouts at their full content height; the heart rate example uses demo data.
 <p>
   <img src="docs/images/focus-break-dark.png" alt="Field Guide on a phone: Focus break and optional feeling check-in, dark theme" width="200">
   <img src="docs/images/workout-rest-light.png" alt="Field Guide on a phone: Workout rest counting toward its minimum, light theme" width="200">
   <img src="docs/images/breathe-dark.png" alt="Field Guide on a phone: breathing pacer with Pause and Stop, dark theme" width="200">
 </p>
 
-Downshift runs in the browser and can also be run from source as a Windows app. It works without a heart rate device; connecting one adds advisory cues. Every default, from block lengths and rest minimums to breathing pace and the heart rate prompt, comes from published research, and the app shows how strong the support for each one is.
+Downshift runs in the browser and can also be run from source as a Windows app. The timers and breathing work without a heart rate device. Research informs the defaults, and the Field Guide distinguishes studied practices from product choices and unvalidated heart rate rules.
 
 ## Features
 
-- **Focus.** Work blocks and breaks: 25/5 minutes (School) or 45 minutes (Work), with a two-minute warning, two snoozes and a note for where to pick up. Each break asks how you feel (tense, tired or fine) and suggests breathing, a walk or time away from screens. If your heart rate stays well above your baseline during a block, an optional prompt asks "Feeling tense?". It never tells you that you're stressed.
+- **Heart rate companion.** Start once on Home while working or studying, without logging manual Focus blocks. Sustained heart rate changes can prompt a gentle check-in and optional guided breathing. Snooze for 15 minutes or Stop at any time. The app shows a completed minute's median and a lagged baseline; these are measurements, not a stress or focus score.
+- **Focus.** Optional work blocks and breaks: 25/5 minutes (School) or 45 minutes (Work), with a two-minute warning, two snoozes and a note for where to pick up. Each break asks how you feel (tense, tired or fine) and suggests breathing, a walk or time away from screens.
 - **Workout.** A rest timer between sets. The minimum rest comes from your goal (strength, size or endurance), and heart rate never shortens it. Once the minimum has passed, it can tell you your heart rate is still elevated.
-- **Breathe.** A visual pacer with spoken cues and tones. Six breaths a minute by default, with cyclic sighing and box breathing as options, and a tension rating before and after.
+- **Breathe.** A visual pacer with optional spoken guidance and tones, silent on a fresh install. Six gentle, unforced breaths a minute for five minutes by default, with cyclic sighing and box breathing as options, and a tension rating before and after. Stop if you feel dizzy or uncomfortable.
 - **History.** A log of your sessions, how sharp you felt by time of day, and CSV export.
 
 ## Heart rate devices
@@ -47,6 +55,12 @@ Heart rate needs a browser with Web Bluetooth: Chrome or Edge on Windows, macOS,
 
 No device? **Device** → **Try demo data** runs everything on a simulated heart rate.
 
+**Use the companion.** Choose **Start** in the Heart rate companion on Home. Keep the app open while you work or study. It first lets heart rate settle, then needs several usable minutes to learn a baseline. A check-in asks how you feel; it cannot tell whether you are stressed or how well you are working. **Snooze** pauses check-ins for 15 minutes and starts fresh learning afterward. **Stop** clears pending companion notices and sound. Settings also retains **In focus** monitoring for people who prefer timed Focus sessions.
+
+Monitoring pauses during Workout, active breathing and timed breaks, and restarts learning after connection loss, stale readings, reported loss of skin contact or a source change. Gaps are not filled with guessed readings. Browsers may suspend background tabs; closing the app stops live monitoring. Optional notifications require the **Enable notifications** gesture and do not make background monitoring reliable.
+
+**Optional sound.** Fresh installs and preference resets mute all sound and turn off spoken guidance, tones and break sounds; explicit saved choices are respected. To hear guidance, turn off **Mute all sound**, raise the volume and enable **Spoken guidance** in Settings. Choose a **Guidance voice** and use **Preview voice**. Naturalness varies by browser and device; automatic selection uses local voices only, and local availability does not guarantee offline playback.
+
 ## How the defaults were chosen
 
 Each default is labeled *tested in studies*, *supported by smaller trials or associations*, or *a reasoned starting point*. The main points:
@@ -54,13 +68,13 @@ Each default is labeled *tested in studies*, *supported by smaller trials or ass
 - Breathing exercises give a small-to-medium drop in self-reported stress, though in the largest blinded trial a placebo pace helped about as much.
 - Short breaks reduce fatigue and raise energy. Their effect on performance is small and uncertain.
 - Longer rests between sets help strength. No trial we know of shows that resting by heart rate improves gains, so the rest minimum is a clock and heart rate is advice only.
-- Heart rate alone hasn't been validated as a stress detector, so the prompt asks how you feel instead of telling you. Most everyday stress probably won't trigger it.
+- Heart rate alone hasn't been validated as a stress detector, so the prompt asks how you feel instead of telling you. The companion's thresholds and timing are product starting points; they can miss stress or prompt for other reasons.
 
 Downshift makes no promises about grades, strength or muscle gains. Each default and its sources are listed in [docs/evidence.md](docs/evidence.md). There are deeper reviews of [Workout and Work](docs/evidence-workout-work.md), [heart rate and thinking](docs/evidence-cognition.md), and the [full literature review](docs/evidence-review.md) of about 90 sources. Every DOI and PubMed ID was checked against Crossref and NCBI.
 
 ## Privacy
 
-There's no account, server, telemetry or analytics. Settings and history stay in your browser's storage (or the Windows app's own profile). Live heart rate isn't recorded; only session summaries are saved, such as your heart rate at the start and end of a rest. You can export your history as CSV or delete everything from Settings. Spoken cues use your system's voices, and some browsers use an online voice service for these.
+There's no account, app server, telemetry or analytics. Settings and history stay in your browser's storage (or the Windows app's own profile). Heart rate is not stored as a continuous recording; session and check-in summaries may include readings, such as heart rate at the start and end of a rest. You can export your history as CSV or delete everything from Settings. Guidance uses browser/system voices. Automatic voice selection stays local; an explicitly selected remote voice service may receive generic cue text. Heart rate values are not spoken or sent to that service.
 
 ## Development
 
