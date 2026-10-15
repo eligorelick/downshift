@@ -25,9 +25,9 @@ import { acquireWakeLock, releaseWakeLock } from '../platform/wakeLock'
 import { now } from '../state/clock'
 import { STALE_MS, getHeartRate, onHeartRate, subscribeHeartRate } from '../state/hrStore'
 import * as logStore from '../state/logStore'
+import { parseHash } from '../state/route'
 import { getSettings, subscribeSettings, updateSettings } from '../state/settingsStore'
 import { isBreathing, startBreathe, subscribeBreathing } from './breathSession'
-import { getStage, subscribeWorkout } from './workoutSession'
 
 // 0.1.0 held a prompt until the user had paused for 1.5 s so it never lands mid-sentence, and showed it
 // after 20 s regardless. The browser only sees activity in this window, not system-wide as 0.1.0 did.
@@ -88,7 +88,6 @@ export interface CompanionView {
   status:
     | 'stopped'
     | 'snoozed'
-    | 'workout'
     | 'breathing'
     | 'break'
     | 'waiting'
@@ -213,7 +212,7 @@ export function focusTimes(t: number): { remainingMs: number; workedMs: number }
 
 function wantMonitoring(): boolean {
   const s = getSettings()
-  if (s.nudgeSnoozedUntil > now() || getStage() === 'active' || isBreathing()) return false
+  if (s.nudgeSnoozedUntil > now() || isBreathing()) return false
   const mode = s.nudgeMode
   if (mode === 'always') return clock.phase !== 'break' && clock.phase !== 'backDue'
   return mode === 'focus' && active && (clock.phase === 'work' || clock.phase === 'breakDue')
@@ -238,7 +237,6 @@ function companionView(): CompanionView {
   let status: CompanionView['status'] = 'stopped'
   if (s.nudgeMode === 'always') {
     if (s.nudgeSnoozedUntil > now()) status = 'snoozed'
-    else if (getStage() === 'active') status = 'workout'
     else if (isBreathing()) status = 'breathing'
     else if (clock.phase === 'break' || clock.phase === 'backDue') status = 'break'
     else if (lastGoodAt === null) status = signalReason
@@ -374,11 +372,10 @@ function showPrompt(info: NudgePromptInfo): void {
     updateSettings({ lastHighNudgeAt: t })
   }
   prompt = { ...info, shownAt: t }
-  // Silent by default. Off the Focus page (or tab) it shows a banner or notification; with sound on it also
-  // plays a tone, and on the Focus page only the tone, since the card is already in view.
-  const away =
-    document.hidden ||
-    (!location.hash.startsWith('#focus') && !location.hash.startsWith('#home') && location.hash !== '')
+  // Home and Focus already show the check-in card. Use the rendered route so retired/unknown hashes
+  // that fall back to Home do not send someone an unnecessary "open Home" notice.
+  const page = parseHash(location.hash).page
+  const away = document.hidden || (page !== 'focus' && page !== 'home')
   if (s.promptSound || away) {
     alert({
       title: info.due === 'tense' ? 'Feeling tense?' : `Heart rate at or above ${info.highLimit} bpm`,
@@ -472,10 +469,6 @@ if (typeof window !== 'undefined') {
   }
   subscribeSettings(settingsChanged)
   subscribeHeartRate(() => {
-    reconcileSignal(now())
-    emit()
-  })
-  subscribeWorkout(() => {
     reconcileSignal(now())
     emit()
   })

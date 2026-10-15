@@ -47,16 +47,7 @@ try {
   const desktop = await fresh(1440, 1000, 'Light')
   await desktop.page.screenshot({ path: join(images, 'home-light.png') })
   if (review) {
-    for (const route of [
-      'home',
-      'focus',
-      'workout',
-      'breathe',
-      'history',
-      'device',
-      'evidence',
-      'settings',
-    ]) {
+    for (const route of ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings']) {
       await go(desktop.page, route)
       await desktop.page.screenshot({ path: join(review, `desktop-${route}.png`) })
     }
@@ -65,16 +56,7 @@ try {
 
   if (review) {
     const phone = await fresh(390, 844, 'Light')
-    for (const route of [
-      'home',
-      'focus',
-      'workout',
-      'breathe',
-      'history',
-      'device',
-      'evidence',
-      'settings',
-    ]) {
+    for (const route of ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings']) {
       await go(phone.page, route)
       await phone.page.screenshot({ path: join(review, `mobile-${route}.png`), fullPage: route === 'home' })
     }
@@ -95,24 +77,44 @@ try {
   await focus.page.screenshot({ path: join(images, 'focus-break-dark.png') })
   await focus.context.close()
 
-  const workout = await fresh(390, 844, 'Light')
-  await go(workout.page, 'workout')
-  await workout.page.getByRole('button', { name: 'Start workout', exact: true }).click()
-  await advance(workout.page, 15)
-  await workout.page.getByRole('button', { name: 'Set done', exact: true }).click()
-  await advance(workout.page, 30)
-  await expect(workout.page.getByRole('button', { name: 'Start set', exact: true })).toBeVisible()
-  await workout.page.screenshot({ path: join(images, 'workout-rest-light.png') })
-  await workout.context.close()
-
   const breathe = await fresh(390, 844, 'Dark')
   await go(breathe.page, 'breathe')
   await breathe.page.getByRole('button', { name: 'Begin', exact: true }).click()
   await expect(breathe.page.getByRole('button', { name: 'Pause', exact: true })).toBeFocused()
   await breathe.page.screenshot({ path: join(images, 'breathe-dark.png') })
   await breathe.context.close()
+
+  const companion = await fresh(390, 844, 'Dark')
+  await go(companion.page, 'device')
+  await companion.page.getByLabel('Demo scenario').selectOption('stress-rise')
+  await companion.page.getByRole('button', { name: 'Try demo data', exact: true }).click()
+  await go(companion.page, 'home')
+  await companion.page.getByRole('button', { name: 'Start companion', exact: true }).click()
+  for (let i = 0; i < 45; i++) {
+    await companion.page.evaluate(() => {
+      if (window.__downshiftClock) window.__downshiftClock.offset += 60000
+    })
+    await companion.page.waitForTimeout(250)
+    if (await companion.page.getByRole('heading', { name: 'Feeling tense?', exact: true }).isVisible()) break
+  }
+  await expect(companion.page.getByRole('heading', { name: 'Feeling tense?', exact: true })).toBeVisible()
+  const region = companion.page.locator('.companion')
+  const bounds = await region.boundingBox()
+  if (!bounds) throw new Error('Companion is missing')
+  await companion.page.setViewportSize({ width: 390, height: Math.ceil(bounds.y + bounds.height + 150) })
+  await region.screenshot({ path: join(images, 'companion-checkin-dark.png') })
+  await go(companion.page, 'settings')
+  const general = companion.page.getByRole('heading', { name: 'General', exact: true }).locator('..')
+  const generalBounds = await general.boundingBox()
+  if (!generalBounds) throw new Error('Voice settings are missing')
+  await companion.page.setViewportSize({
+    width: 390,
+    height: Math.ceil(generalBounds.y + generalBounds.height + 150),
+  })
+  await general.screenshot({ path: join(images, 'voice-settings-dark.png') })
+  await companion.context.close()
   console.log(`Saved real UI screenshots to ${images}`)
-  if (review) console.log(`Saved all eight desktop screens to ${review}`)
+  if (review) console.log(`Saved all seven desktop screens to ${review}`)
 } finally {
   await browser.close()
 }

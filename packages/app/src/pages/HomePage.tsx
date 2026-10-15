@@ -38,7 +38,7 @@ export function HomePage() {
       <header className="home-head">
         <div className="page-head">
           <h1>Downshift</h1>
-          <p>A calm place to start.</p>
+          <p>A quiet reset for work and study.</p>
         </div>
         <a className="home-hr" href="#device">
           <Icon name="device" />
@@ -59,9 +59,10 @@ export function HomePage() {
         <section className="card welcome" aria-labelledby="welcome-h">
           <h2 id="welcome-h">Welcome to Downshift</h2>
           <p>
-            Downshift has three modes. <strong>Focus</strong> times study or work blocks and breaks.{' '}
-            <strong>Workout</strong> times your rest between sets. <strong>Breathe</strong> paces slow
-            breathing. A heart rate device is optional.
+            Start the <strong>heart rate companion</strong> while you work or study, or use{' '}
+            <strong>Focus</strong> for timed blocks and breaks. <strong>Breathe</strong> offers optional
+            guided breathing. A heart rate device is optional; its readings are context, not a measure of
+            focus or stress.
           </p>
           <ul>
             <li>It is not a medical device. It cannot diagnose stress or any condition.</li>
@@ -108,22 +109,6 @@ export function HomePage() {
             <Icon name="arrow" size={20} />
           </Button>
         </section>
-        <section className="mode-row" aria-labelledby="mode-workout">
-          <span className="mode-icon">
-            <Icon name="workout" size={52} />
-          </span>
-          <div className="mode-copy">
-            <h2 id="mode-workout">Workout</h2>
-            <p>A rest timer for the gap between sets.</p>
-            <p className="caveat">
-              <Icon name="evidence" size={18} />
-              <span>Rest times are group averages; heart rate cannot say your muscles have recovered.</span>
-            </p>
-          </div>
-          <Button onClick={() => go('#workout')}>
-            Open workout <Icon name="arrow" size={20} />
-          </Button>
-        </section>
         <section className="mode-row" aria-labelledby="mode-breathe">
           <span className="mode-icon">
             <Icon name="breathe" size={52} />
@@ -154,10 +139,6 @@ export function HomePage() {
           <div>
             <dt>Time worked</dt>
             <dd className="num">{duration(today.focusMs)}</dd>
-          </div>
-          <div>
-            <dt>Sets</dt>
-            <dd className="num">{today.sets}</dd>
           </div>
           <div>
             <dt>Breathing sessions</dt>

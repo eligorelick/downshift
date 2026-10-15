@@ -1,6 +1,6 @@
-// A typed copy of the tables in docs/evidence.md, docs/evidence-workout-work.md and
+// A typed copy of the tables in docs/evidence.md, docs/evidence-work-study.md and
 // docs/evidence-cognition.md. Text may hold [label](url) links; the page turns them into real links.
-// Keep the two in step when either changes.
+// Keep current evidence in step when either changes. Retired Workout research stays in the historical docs.
 
 export type Tone = 'tested' | 'partial' | 'start'
 
@@ -28,7 +28,7 @@ export interface EvidenceSection extends EvidenceBlock {
 }
 
 export const EVIDENCE_INTRO =
-  'Each default is labeled by the strength of its support: tested in studies, supported by smaller trials or associations, or a reasoned starting point that no study has tested in this form.'
+  'For work and study resets, each default is labeled by the strength of its support: tested in studies, supported by smaller trials or associations, or a reasoned starting point that no study has tested in this form.'
 
 // Tag color. Only a clean "Tested" counts as tested; guesses and design choices read as starting points.
 export function toneOf(status: string): Tone {
@@ -41,7 +41,7 @@ export function toneOf(status: string): Tone {
   ) {
     return 'start'
   }
-  if (s === 'tested' || s === 'pace tested' || s === 'tested for strength' || s === 'tested for stress') {
+  if (s === 'tested' || s === 'pace tested' || s === 'tested for stress') {
     return 'tested'
   }
   return 'partial'
@@ -147,7 +147,7 @@ export const EVIDENCE_SECTIONS: EvidenceSection[] = [
             'Guards against sparse data counting as sustained change. These are engineering choices, not validated signal-quality or stress thresholds',
           ],
           [
-            'Pauses during Workout, active breathing and timed breaks; resets on disconnect, readings over 15 seconds old, reported loss of skin contact or a source change',
+            'Pauses during active breathing and timed breaks; resets on disconnect, readings over 15 seconds old, reported loss of skin contact or a source change',
             'Missing intervals are not reconstructed. Unknown skin-contact status is accepted; it is not proof of good contact. Browsers can suspend background work, and closing the app stops monitoring',
           ],
           [
@@ -339,122 +339,6 @@ export const EVIDENCE_SECTIONS: EvidenceSection[] = [
     ],
   },
   {
-    id: 'workout',
-    title: 'Workout rest',
-    subsections: [
-      {
-        title: 'What the research supports',
-        bullets: [
-          'For strength, short rests (under 60 s) still produce solid gains, but rests over 2 minutes seem needed to maximize gains in trained people. For untrained people 60-120 s looked sufficient ([Grgic et al. 2018](https://doi.org/10.1007/s40279-017-0788-x), 23 studies).',
-          'For hypertrophy the picture is mixed. An earlier review found equivocal results with a possible edge for long rests in trained people ([Grgic et al. 2017](https://doi.org/10.1080/17461391.2017.1340524)). A Bayesian meta-analysis of 9 studies found a small benefit of resting over 60 s and no appreciable difference beyond 90 s, perhaps because lost volume load stops growing past that point ([Singer et al. 2024](https://doi.org/10.3389/fspor.2024.1429789)).',
-          'In one 8-week trial in 21 trained men, 3-minute rests beat 1-minute rests for squat and bench 1RM and for thigh muscle thickness; muscular endurance gains were similar ([Schoenfeld et al. 2016](https://doi.org/10.1519/JSC.0000000000001272)).',
-          'The classic review by goal ([de Salles et al. 2009](https://doi.org/10.2165/11315230-000000000-00000), 35 studies) puts 3-5 minutes with loads of 50-90% of 1RM and for absolute strength and power, 30-60 s for hypertrophy with moderate loads, and, with evidence it calls less clear and indirect, 20 s to 1 minute for muscular endurance. Treat these as practitioner conventions; the newer reviews above soften the hypertrophy figure.',
-          'One study set rest by heart rate rather than the clock: lifters resumed when HR fell back to within 2 bpm of their own reading 45 s after the first working set. In 34 recreationally trained men doing bench press to failure at 60% 1RM, this gave more total repetitions than a fixed 60 s rest (55.1 vs 39.5) and a slower decline from set to set ([Buskard et al. 2017](https://www.asep.org/asep/asep/JEPonlineFEBRUARY2017_Andrew_Buskard.pdf)). It is a single small trial, and the hypertrophy benefit was extrapolated, not measured.',
-          'Self-selected rest is not obviously worse than a fixed rest. In 16 trained men doing high-intensity interval resistance training, self-selected rests gave similar oxygen uptake, heart rate, recovery perception and enjoyment to fixed 10 s and 30 s rests ([Fidalgo et al. 2023](https://doi.org/10.1007/s00421-023-05246-9)). The fixed rests were only 10 s and 30 s, so it says little about heavy lifting with longer rests.',
-          'Slow breathing between sets: in 18 trained men doing 5 sets of 3 back squats with 3-minute rests, 4-7-8 breathing neither helped nor hurt power, bar velocity, RPE or perceived recovery. Heart rate recovery was larger after sets 2 and 3 (about 48-51 vs 38-45 bpm) ([Buxton et al. 2024](https://doi.org/10.5114/jhk/185935)). So any breathing prompt should make no performance claim.',
-        ],
-      },
-      {
-        title: 'Sensor accuracy during lifting',
-        bullets: [
-          'A meta-analysis of 44 studies found wrist optical sensors accurate at rest and on the treadmill but off by an average of -7.3 bpm (underestimating) during resistance training, with error growing about 3 bpm per 10 bpm rise in HR ([Zhang et al. 2020](https://doi.org/10.1080/02640414.2020.1767348)).',
-          'In 50 people doing 10-rep-max sets, only the Polar H7 chest strap and one pair of sports earphones met the 10% error criterion in both exercise modes, and across devices underestimation grew with intensity. Readings were taken after each set, not continuously ([Boudreaux et al. 2018](https://doi.org/10.1249/MSS.0000000000001471)).',
-          'WHOOP 3.0 agreed highly with a Polar H10 during back squats, moderately during deadlifts and curl-to-press, and poorly during seated cable rows ([Støve & Hansen 2022](https://doi.org/10.1080/02640414.2023.2180160)). The abstract does not say which arm position it used.',
-          "Placement matters. In 28 adults, three identical WHOOP 4.0 units agreed best with the chest strap when worn on the upper arm, ahead of the forearm and wrist; all degraded during burpees ([Moghaddam et al. 2026](https://doi.org/10.3390/s26010176)). That protocol was a cycling warm-up, burpees and a treadmill test, not weightlifting. We couldn't find a peer-reviewed validation of the bicep band during resistance exercise, or of WHOOP 5.0/MG in any setting.",
-          "Wrist movement appears to hurt wrist sensors (the Mio's error was attributed to wrist movement during high-intensity interval exercise in [Bunn et al. 2019](https://doi.org/10.70252/LOOX1045), which used treadmill, outdoor and a mixed high-intensity interval circuit rather than set-based weightlifting), so a chest strap is the safest choice.",
-        ],
-      },
-      {
-        title: 'Gaps',
-        bullets: [
-          'No published method we came across detects set boundaries from heart rate alone. We assume heart rate lags the effort by seconds and is too flat across a workout to mark set boundaries, so set start and end are usually found with accelerometers. That is our reasoning, not a finding, so any set-end logic here is a design inference.',
-          'Nothing we read gives the time course of HR in the first 1-3 minutes after a resistance set as a percentage of its pre-set value. The best available data points are Buskard (HR at 45 s after set 1 used as the personal target, with later rests growing longer), and Buxton (HR falls tens of bpm within the 3-minute rest). The "settled" thresholds below are therefore starting points.',
-        ],
-      },
-      {
-        title: 'Defaults',
-        tables: [
-          {
-            columns: ['Default', 'Why', 'Status'],
-            statusCol: 2,
-            rows: [
-              [
-                'Strength: rests over about 2 min seem needed to maximize gains in trained lifters (3-5 min at 50-90% of 1RM in an older review, de Salles 2009)',
-                'Grgic 2018; Schoenfeld 2016; de Salles 2009',
-                'Tested for strength',
-              ],
-              [
-                'Hypertrophy: at least 60-90 s, little extra gain past about 90 s; 2-3 min for big compound lifts as a starting point',
-                'Singer 2024 (benefit over 60 s, plateau near 90 s); Schoenfeld 2016',
-                'Tested for outcomes; the compound-lift split is a starting point',
-              ],
-              [
-                'Muscular endurance: 30-60 s (within the 20-60 s convention in de Salles 2009)',
-                'de Salles 2009',
-                'Convention, not trial-tested here',
-              ],
-              [
-                'Rest timer starts at set end and shows the floor, never "stop"',
-                'Minimums come from average group results; self-selected rests worked in one trial (Fidalgo 2023)',
-                'Design inference',
-              ],
-              [
-                'Advisory "HR has settled": HR is within 10% of the pre-set reading, or flattened (under 2 bpm change over 15 s) and within 20%; if the set raised heart rate by less than 5 bpm, it counts as settled',
-                'Buskard used a personal HR target (within 2 bpm of a reading taken after set 1). No standard cutoff found',
-                'Starting point',
-              ],
-              [
-                '"Take more time": heart rate has not settled by the time the minimum is up',
-                "Same reasoning; Buskard's lifters needed progressively more rest as sets went on",
-                'Starting point',
-              ],
-              [
-                'Set-end suggestion from a sustained HR peak then fall (manual tap as primary)',
-                'No HR-only method found; we assume accelerometers are the usual approach (our reasoning, not a finding)',
-                'Starting point',
-              ],
-              [
-                'Optional easy-breathing reminder between sets, no performance claim',
-                "Buxton 2024 tested 4-7-8 breathing (with holds): larger heart rate recovery after sets 2 and 3, no change in power or RPE. The app's easy-breathing cue itself is untested",
-                '4-7-8 tested, null for performance; the cue is a starting point',
-              ],
-              [
-                'Chest strap first choice; wrist sensors tend to read low, and the upper arm has no validation for lifting that we could find; show a "wrist sensors tend to read low while lifting" note',
-                'Zhang 2020; Boudreaux 2018; Moghaddam 2026',
-                'Tested outside lifting for upper arm',
-              ],
-              [
-                'Average HR over several seconds, discard readings that jump',
-                'Wrist sensors under-read during lifting and one study blamed wrist movement',
-                'Design inference',
-              ],
-              [
-                'Rest caps: strength 300 s, hypertrophy 180 s, endurance 90 s',
-                'Past the cap the cue stops waiting for heart rate; the strength cap is long enough for the 3-5 minute figures in de Salles 2009',
-                'Starting point',
-              ],
-              [
-                'Set-end suggestion constants: at least 20 s into a set, a fall of at least 8 bpm from the in-set peak, falling for at least 10 s',
-                'No HR-only method found; chosen so the cue does not fire on the rise or on noise',
-                'Starting point',
-              ],
-              [
-                'Artifact rule: a change of more than 25 bpm within 2 s, or no skin contact, suppresses heart rate cues',
-                'Jumps of that size are more likely sensor error or motion than physiology (our reasoning; the largest real rise we found within seconds was about 16 bpm over about 8 s on standing, [Heidelbach et al. 2026](https://pmc.ncbi.nlm.nih.gov/articles/PMC13018822/)); wrist sensors under-read during lifting and one study blamed wrist movement',
-                'Starting point',
-              ],
-              [
-                'Minimum rise for a "settled" judgment: the in-set peak must be at least 5 bpm above the pre-set reading',
-                'Below that the set barely moved heart rate, so there is nothing to recover from',
-                'Starting point',
-              ],
-            ],
-          },
-        ],
-      },
-    ],
-  },
-  {
     id: 'technique',
     title: 'Choosing a technique',
     bullets: [
@@ -488,11 +372,6 @@ export const EVIDENCE_SECTIONS: EvidenceSection[] = [
             'Sudden spike',
             'Slow exhale-focused breathing; no special claim for a "double sigh"; the app\'s 2-minute default is a starting point',
             'Starting point',
-          ],
-          [
-            'Between sets',
-            'Optional easy-breathing reminder, no performance claim',
-            '4-7-8 tested, null for performance; the cue is a starting point',
           ],
         ],
       },
@@ -567,11 +446,6 @@ export const EVIDENCE_SECTIONS: EvidenceSection[] = [
     bullets: [
       'That the app detects stress, readiness, recovery or fatigue from heart rate. It can only ask.',
       'That 52/17, 25/5 or 45/10 is the optimal schedule for work.',
-      'That a rest period guarantees more muscle or strength for an individual; the reviews describe group averages.',
-      'That breathing between sets improves lifting performance.',
-      'That HR "settled" means muscles are recovered. Nothing we found links heart rate recovery to muscle recovery between sets.',
-      'That sets can be found from heart rate alone.',
-      'That wrist-worn HR is accurate during lifting, or that the WHOOP bicep band has been validated for lifting.',
       'That the physiological sigh or cyclic sighing is proven for stress or anxiety in healthy adults.',
       'That nature views or outdoor walks raise work output; the evidence is for attention and fatigue in small studies.',
       'That time-of-day or chronotype can be read from heart rate.',
@@ -590,21 +464,8 @@ export const EVIDENCE_SECTIONS: EvidenceSection[] = [
   },
 ]
 
-// The numbered source list from docs/evidence-workout-work.md.
-export const WORKOUT_WORK_SOURCES: string[] = [
-  'Grgic J, et al. Effects of rest interval duration in resistance training on measures of muscular strength: a systematic review. Sports Med 2018. [doi:10.1007/s40279-017-0788-x](https://doi.org/10.1007/s40279-017-0788-x)',
-  'Grgic J, Lazinica B, Mikulic P, Krieger JW, Schoenfeld BJ. The effects of short versus long inter-set rest intervals in resistance training on measures of muscle hypertrophy: a systematic review. Eur J Sport Sci 2017. [doi:10.1080/17461391.2017.1340524](https://doi.org/10.1080/17461391.2017.1340524)',
-  'Schoenfeld BJ, Pope ZK, Benik FM, et al. Longer interset rest periods enhance muscle strength and hypertrophy in resistance-trained men. J Strength Cond Res 2016. [doi:10.1519/JSC.0000000000001272](https://doi.org/10.1519/JSC.0000000000001272)',
-  'Singer A, et al. Give it a rest: a systematic review with Bayesian meta-analysis on the effect of inter-set rest interval duration on muscle hypertrophy. Front Sports Act Living 2024. [doi:10.3389/fspor.2024.1429789](https://doi.org/10.3389/fspor.2024.1429789)',
-  'de Salles BF, et al. Rest interval between sets in strength training. Sports Med 2009;39:765-777. [doi:10.2165/11315230-000000000-00000](https://doi.org/10.2165/11315230-000000000-00000)',
-  'Buskard A, Wood R, Mullin E, Bruneau M, Jaghab A, Thompson B. Heart rate determined rest intervals in hypertrophy-type resistance training. JEPonline 2017;20(1):13-22. [PDF](https://www.asep.org/asep/asep/JEPonlineFEBRUARY2017_Andrew_Buskard.pdf)',
-  'Fidalgo A, Farinatti P, Matos-Santos L, Pilon R, Rodrigues GM, Oliveira BRR, Monteiro W. Self-selected or fixed: is there an optimal rest interval for controlling intensity in high-intensity interval resistance training? Eur J Appl Physiol 2023. [doi:10.1007/s00421-023-05246-9](https://doi.org/10.1007/s00421-023-05246-9) (abstract only; full text paywalled)',
-  'Buxton et al. The effects of slow breathing during inter-set recovery on power performance in the barbell back squat. J Hum Kinet 2024. [doi:10.5114/jhk/185935](https://doi.org/10.5114/jhk/185935)',
-  'Zhang Y, et al. Validity of wrist-worn photoplethysmography devices to measure heart rate: a systematic review and meta-analysis. J Sports Sci 2020. [doi:10.1080/02640414.2020.1767348](https://doi.org/10.1080/02640414.2020.1767348)',
-  'Boudreaux BD, et al. Validity of wearable activity monitors during cycling and resistance exercise. Med Sci Sports Exerc 2018. [doi:10.1249/MSS.0000000000001471](https://doi.org/10.1249/MSS.0000000000001471)',
-  'Støve MP, Hansen ECK. Accuracy of the Apple Watch Series 6 and the Whoop Band 3.0 for assessing heart rate during resistance exercises. J Sports Sci 2022;40(23):2639-2644 (online 2023). [doi:10.1080/02640414.2023.2180160](https://doi.org/10.1080/02640414.2023.2180160) (abstract only; full text paywalled)',
-  'Moghaddam M, Collins JP, Gardner CE, Rabel MC. Impact of anatomical placement on the accuracy of wearable heart rate monitors during rest and various exercise intensities. Sensors 2026;26(1):176 (cited by its 2026 issue year; online 26 Dec 2025). [doi:10.3390/s26010176](https://doi.org/10.3390/s26010176)',
-  'Bunn JA, et al. Evaluation of earbud and wristwatch heart rate monitors during aerobic and resistance training. Int J Exerc Sci 2019. [doi:10.70252/LOOX1045](https://doi.org/10.70252/LOOX1045)',
+// The current source list from docs/evidence-work-study.md. Historical Workout sources remain in docs/evidence-workout-work.md.
+export const WORK_STUDY_SOURCES: string[] = [
   'Albulescu P, et al. "Give me a break!" A systematic review and meta-analysis on the efficacy of micro-breaks for increasing well-being and performance. PLoS One 2022. [doi:10.1371/journal.pone.0272460](https://doi.org/10.1371/journal.pone.0272460)',
   'Hunter EM, Wu C. Give me a better break: choosing workday break activities to maximize resource recovery. J Appl Psychol 2016;101:302-311. [doi:10.1037/apl0000045](https://doi.org/10.1037/apl0000045)',
   'Kim S, Park Y, Niu Q. Micro-break activities at work to recover from daily work demands. J Organ Behav 2017;38(1):28-44. [doi:10.1002/job.2109](https://doi.org/10.1002/job.2109) (abstract only)',

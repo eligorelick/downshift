@@ -1,4 +1,4 @@
-# Slow the breath, rebuild the trigger
+# Historical prototype review: slow the breath, rebuild the trigger
 
 > **About this document.** This is the evidence review carried out in October 2026 while Downshift was being designed. It assesses the first prototype, which sounded an alarm on a 30-bpm spike and started a two-minute exercise automatically. The app was then rebuilt with these findings as input, but it does not follow every recommendation here (for example, it has no warning after 90 minutes without a break) and some of its settings differ. Where the text says "the app currently", it means that prototype. [evidence.md](evidence.md) lists what the app does now.
 
@@ -58,7 +58,7 @@ The strap should not decide when breaks happen. Over 90 minutes of demanding wor
 | Weak or mixed | Any one technique (cyclic sighing, box, "coherent" 5.5/min) beating another. A longer exhale beating an equal one. Sessions shorter than 5 minutes. A single breathing session improving attention or memory. Fixed break schedules beating self-chosen ones. Micro-breaks improving performance on demanding work. Phone breaks being harmful. A real rest restoring more than continuing or a demanding filler (one lab). Physiologically timed prompts beating random or scheduled ones. Pre-test reappraisal of nerves. |
 | Unproven or folklore | Detecting stress from heart rate alone, including +30 bpm for 15 s and 130 bpm. A drop in heart rate as proof the exercise worked. Breath holds or 4-7-8 adding benefit. Heart rate or HRV deciding when to break. 52/17, 90-minute ultradian blocks, 50/10 as an optimum, the 10-to-15-minute attention span, "23 minutes to refocus". Breathing breaks or any break schedule raising grades. |
 
-### Current behavior against recommended settings
+### Historical prototype behavior against recommended settings
 
 In the last column, "tested" means the value was used in controlled studies of this kind, "precedent" means it is borrowed from another product or research design, and "extrapolation" means the number is a reasoned starting point that no study has tested in this form.
 

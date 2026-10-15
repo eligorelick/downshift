@@ -1,5 +1,10 @@
 import { describe, expect, test } from 'bun:test'
-import { RestCoach } from '../src/restCoach'
+import * as core from '../src/index'
+import { RestCoach } from '../src/legacy/restCoach'
+
+test('the active core entry point does not expose the retired workout coach', () => {
+  expect('RestCoach' in core).toBe(false)
+})
 
 const floors = { strength: 120, hypertrophy: 90, hypertrophyIsolation: 60, endurance: 45 }
 const S = 1000

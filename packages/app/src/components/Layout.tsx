@@ -7,7 +7,6 @@ import { Icon, type IconName } from './Icon'
 export const NAV: ReadonlyArray<{ page: PageKey; label: string; icon: IconName }> = [
   { page: 'home', label: 'Home', icon: 'home' },
   { page: 'focus', label: 'Focus', icon: 'focus' },
-  { page: 'workout', label: 'Workout', icon: 'workout' },
   { page: 'breathe', label: 'Breathe', icon: 'breathe' },
   { page: 'history', label: 'History', icon: 'history' },
   { page: 'device', label: 'Device', icon: 'device' },
@@ -15,8 +14,8 @@ export const NAV: ReadonlyArray<{ page: PageKey; label: string; icon: IconName }
   { page: 'settings', label: 'Settings', icon: 'settings' },
 ]
 
-// Phones get five tabs; Evidence and Settings live in the top bar, Device behind the heart-rate badge.
-const TABS = NAV.slice(0, 5)
+// Phones keep the four daily tools in the tab bar; Device is behind the heart-rate badge.
+const TABS = NAV.filter((n) => ['home', 'focus', 'breathe', 'history'].includes(n.page))
 const TOP = NAV.filter((n) => n.page === 'evidence' || n.page === 'settings')
 
 function NavLink(props: { page: PageKey; label: string; icon: IconName; current: boolean }) {
@@ -42,7 +41,7 @@ export function Layout({ page, children }: { page: PageKey; children: ReactNode 
       return
     }
     window.scrollTo(0, 0)
-    // A page mid-session (Focus, Workout) has no h1, so fall back to its stage element or first heading.
+    // Focus mid-session has no h1, so fall back to its stage element or first heading.
     const target =
       main.current?.querySelector<HTMLElement>('h1') ??
       main.current?.querySelector<HTMLElement>('[data-stage-focus]') ??

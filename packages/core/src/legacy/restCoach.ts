@@ -1,9 +1,10 @@
+// Legacy workout implementation, retained for reversibility and safety tests; not exported by active core.
 // Workout rest coach. The rest floor is a clock set by the goal, and heart rate never shortens it: we know
 // of no study linking HR recovery to muscle recovery between sets. After the floor, HR can only say "not
 // yet" or flag the reading as unreliable (wrist optical HR is poor during lifting; a chest strap is better).
 // Evidence: docs/evidence-workout-work.md (Workout mode).
-import type { RestAdvice, SetRecord } from './setRecord'
-import type { Goal } from './settings'
+import type { RestAdvice, SetRecord } from '../setRecord'
+import type { Goal } from '../settings'
 
 export type { RestAdvice, SetRecord }
 

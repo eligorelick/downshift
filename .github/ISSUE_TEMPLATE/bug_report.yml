@@ -45,10 +45,10 @@ body:
   - type: dropdown
     id: mode
     attributes:
-      label: Which mode
+      label: Which part of Downshift
       options:
         - Focus
-        - Workout
+        - Heart rate companion
         - Breathe
         - Device or connecting
         - History or Settings

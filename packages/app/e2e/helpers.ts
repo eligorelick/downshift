@@ -15,10 +15,7 @@ export async function go(page: Page, hash: string): Promise<void> {
   }, hash)
 }
 
-export async function startDemo(
-  page: Page,
-  scenario: 'resting' | 'stress-rise' | 'workout-sets',
-): Promise<void> {
+export async function startDemo(page: Page, scenario: 'resting' | 'stress-rise'): Promise<void> {
   await go(page, 'device')
   await page.getByLabel('Demo scenario').selectOption(scenario)
   await page.getByRole('button', { name: 'Try demo data' }).click()

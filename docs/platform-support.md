@@ -19,7 +19,7 @@ Downshift reads live heart rate from the standard Bluetooth Low Energy Heart Rat
 
 Web Bluetooth requires a secure page: the hosted website is served over HTTPS, and `localhost` also counts. See [caniuse.com/web-bluetooth](https://caniuse.com/web-bluetooth) for browser support in general.
 
-Without heart rate, the Focus timers, Workout rest timer and Breathe all still work; only the heart rate cues are missing. The Device page explains why a browser cannot connect.
+Without heart rate, the Focus timers and optional Breathe guide still work; heart rate check-ins need a connected device or demo data. The Device page explains why a browser cannot connect.
 
 ## Devices
 
@@ -39,7 +39,7 @@ Google lists no other Fitbit models as able to share heart rate.
 
 A device usually streams to one receiver at a time. Disconnect it from bike computers, gym equipment and other apps first.
 
-**For lifting, use a chest strap.** Wrist optical sensors under-read during resistance training ([Zhang et al. 2020](https://doi.org/10.1080/02640414.2020.1767348); [Boudreaux et al. 2018](https://doi.org/10.1249/MSS.0000000000001471)), and one study attributed a watch's error to wrist movement ([Bunn et al. 2019](https://doi.org/10.70252/LOOX1045)). Upper-arm placement agreed better than the wrist in one non-lifting study, but it hasn't been validated for lifting. See [evidence-workout-work.md](evidence-workout-work.md).
+Use the companion while working or studying with a comfortable, stable sensor fit. Movement and sensor error can change the reading; heart rate cannot establish stress, focus or readiness. Follow the device maker's fitting guidance. The current limits are in [evidence.md](evidence.md). The former lifting-specific sensor review and its citations are preserved in the [historical research archive](evidence-workout-work.md).
 
 ## Why there is no WHOOP or Fitbit login
 

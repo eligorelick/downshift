@@ -96,8 +96,6 @@ export function Settings() {
   const [resetOpen, setResetOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const set = (patch: Partial<SettingsData>) => updateSettings(patch)
-  const rest = (k: keyof SettingsData['restFloorSec'], v: number) =>
-    updateSettings((x) => ({ ...x, restFloorSec: { ...x.restFloorSec, [k]: v } }))
   const block = (k: keyof SettingsData['blockMin'], v: number) =>
     updateSettings((x) => ({ ...x, blockMin: { ...x.blockMin, [k]: v } }))
 
@@ -133,7 +131,7 @@ export function Settings() {
         <VoiceSettings />
         <Toggle
           label="Tones"
-          hint="Soft tones that mark each breath, and the chimes in Workout."
+          hint="Soft tones that mark each breath."
           checked={s.tones}
           onChange={(tones) => set({ tones })}
         />
@@ -260,80 +258,6 @@ export function Settings() {
           onChange={(askSharpness) => set({ askSharpness })}
         />
         <Toggle label="Break sound" checked={s.breakSound} onChange={(breakSound) => set({ breakSound })} />
-      </Card>
-
-      <Card title="Workout">
-        <Choice label="Goal">
-          <Segmented
-            label="Goal"
-            value={s.goal}
-            options={[
-              { value: 'strength', label: 'Strength' },
-              { value: 'hypertrophy', label: 'Muscle size' },
-              { value: 'endurance', label: 'Endurance' },
-            ]}
-            onChange={(goal) => set({ goal })}
-          />
-        </Choice>
-        <p className="muted small">
-          Rest floors are minimums from group averages. The timer never says stop.
-        </p>
-        <Slider
-          label="Strength rest"
-          value={s.restFloorSec.strength}
-          min={60}
-          max={300}
-          unit="s"
-          basis="tested"
-          basisText="rests over about 2 min tested for trained lifters"
-          onChange={(v) => rest('strength', v)}
-        />
-        <Slider
-          label="Muscle size rest, big lifts"
-          value={s.restFloorSec.hypertrophy}
-          min={30}
-          max={180}
-          unit="s"
-          basis="starting point"
-          onChange={(v) => rest('hypertrophy', v)}
-        />
-        <Slider
-          label="Muscle size rest, isolation"
-          value={s.restFloorSec.hypertrophyIsolation}
-          min={30}
-          max={180}
-          unit="s"
-          basis="starting point"
-          basisText="rests over 60 s tested, with little gain past about 90 s; the exact value is a starting point"
-          onChange={(v) => rest('hypertrophyIsolation', v)}
-        />
-        <Slider
-          label="Endurance rest"
-          value={s.restFloorSec.endurance}
-          min={15}
-          max={120}
-          unit="s"
-          basis="convention"
-          onChange={(v) => rest('endurance', v)}
-        />
-        <Toggle
-          label="Heart rate cues"
-          hint="Advisory only: heart rate has settled, or take more time."
-          checked={s.restHrCues}
-          onChange={(restHrCues) => set({ restHrCues })}
-        />
-        <Toggle
-          label="Suggest when a set has ended"
-          hint="A starting point; tapping is the main way."
-          checked={s.setEndSuggest}
-          onChange={(setEndSuggest) => set({ setEndSuggest })}
-        />
-        <Toggle
-          label="Breathing between sets"
-          hint="No performance claim."
-          checked={s.breathingBetweenSets}
-          onChange={(breathingBetweenSets) => set({ breathingBetweenSets })}
-        />
       </Card>
 
       <Card title="Breathing">

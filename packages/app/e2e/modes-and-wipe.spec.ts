@@ -46,18 +46,15 @@ test('after "Delete all data" the Focus page no longer says the last session was
   await expect(page.getByText('Saved to History.')).toHaveCount(0)
 })
 
-test('after "Delete all data" a finished workout summary is cleared', async ({ page }) => {
+test('Delete all data stops a snoozed companion and keeps it stopped after reload', async ({ page }) => {
   await freshPage(page)
-  await go(page, 'workout')
-  await page.getByRole('button', { name: 'Start workout' }).click()
-  await page.getByRole('button', { name: 'Set done' }).click()
-  await advance(page, 30, 30)
-  await page.getByRole('button', { name: 'Finish workout' }).click()
-  await page.getByRole('button', { name: 'Yes, finish' }).click()
-  await expect(page.getByText('Saved to History.')).toBeVisible()
+  await page.getByRole('button', { name: 'Start companion', exact: true }).click()
+  await page.getByRole('button', { name: 'Snooze 15 minutes', exact: true }).click()
+  await expect(page.getByText('Snoozed', { exact: true })).toBeVisible()
 
   await deleteAllData(page)
-  await go(page, 'workout')
-  await expect(page.getByRole('button', { name: 'Start workout' })).toBeVisible()
-  await expect(page.getByText('Saved to History.')).toHaveCount(0)
+  await page.reload()
+  await go(page, 'home')
+  await expect(page.getByText('Companion stopped', { exact: true })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Resume companion', exact: true })).toHaveCount(0)
 })

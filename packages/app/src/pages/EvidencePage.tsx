@@ -5,7 +5,7 @@ import {
   EVIDENCE_INTRO,
   EVIDENCE_SECTIONS,
   type EvidenceTable,
-  WORKOUT_WORK_SOURCES,
+  WORK_STUDY_SOURCES,
   toneOf,
 } from '../content/evidence'
 import '../styles/evidence.css'
@@ -134,9 +134,9 @@ export function EvidencePage() {
           ))}
         </section>
       ))}
-      <Card title="Sources for Workout and Focus">
+      <Card title="Sources for work, study and breathing">
         <ol className="ev-sources">
-          {WORKOUT_WORK_SOURCES.map((src) => (
+          {WORK_STUDY_SOURCES.map((src) => (
             <li key={src}>{rich(src)}</li>
           ))}
         </ol>

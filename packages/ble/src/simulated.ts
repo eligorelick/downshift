@@ -1,7 +1,7 @@
 import type { DeviceRef } from '@downshift/core'
 import type { Clock, ConnectionState, HeartRateReading, HeartRateSource } from './types'
 
-export type Scenario = 'resting' | 'stress-rise' | 'workout-sets'
+export type Scenario = 'resting' | 'stress-rise'
 
 export interface SimulatedOptions extends Clock {
   scenario: Scenario
@@ -35,11 +35,6 @@ function bpmAt(scenario: Scenario, s: number): number {
       // minutes (a 5-minute settle, 5 baseline minutes, and the newest 5 held out), so 20 leaves a margin and
       // the rise is not learned as baseline.
       return resting(s) + 18 * Math.min(1, Math.max(0, (s - 1200) / 60))
-    case 'workout-sets': {
-      const c = s % 150
-      if (c < 40) return 90 + 60 * (c / 40)
-      return 90 + 60 * Math.exp(-(c - 40) / 20)
-    }
   }
 }
 

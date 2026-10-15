@@ -25,7 +25,6 @@ import '../styles/device.css'
 const SCENARIOS: ReadonlyArray<{ value: Scenario; label: string }> = [
   { value: 'resting', label: 'Resting' },
   { value: 'stress-rise', label: 'Heart rate rising' },
-  { value: 'workout-sets', label: 'Workout sets' },
 ]
 
 const STATE_TEXT = {
@@ -186,10 +185,6 @@ export function Device() {
                 4.0 and MG are expected to work the same way.
               </li>
               <li>A device can usually send to only one app at a time, so close other apps that use it.</li>
-              <li>
-                For lifting, a chest strap is the safest choice: wrist sensors tend to read low, and arm bands
-                haven't been validated for lifting.
-              </li>
             </ol>
           </details>
           <details>

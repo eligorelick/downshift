@@ -1,15 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-export const PAGES = [
-  'home',
-  'focus',
-  'workout',
-  'breathe',
-  'history',
-  'device',
-  'evidence',
-  'settings',
-] as const
+export const PAGES = ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings'] as const
 export type PageKey = (typeof PAGES)[number]
 
 export interface Route {

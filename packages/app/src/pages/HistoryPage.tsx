@@ -7,7 +7,6 @@ import { Segmented } from '../components/Segmented'
 import { SharpestHours } from '../components/SharpestHours'
 import { rememberDevice } from '../platform/desktopBridge'
 import { discardFocus } from '../sessions/focusSession'
-import { discardWorkout } from '../sessions/workoutSession'
 import { now } from '../state/clock'
 import { disconnect } from '../state/hrStore'
 import { all, clear, subscribe } from '../state/logStore'
@@ -21,7 +20,7 @@ const LABEL: Record<LogEvent['type'], string> = {
   nudge: 'Nudge',
   focus: 'Focus',
   break: 'Break',
-  set: 'Workout set',
+  set: 'Legacy workout set',
 }
 
 // Stored keys shown as words; an unknown key (from a newer or older version) is shown as it is.
@@ -81,7 +80,6 @@ export async function deleteAllData(): Promise<void> {
   // End live sessions first, without logging, or they would write into the log we are about to clear.
   // A breathe session only runs while its page is shown, so none can be live here.
   discardFocus()
-  discardWorkout()
   await disconnect()
   rememberDevice(null)
   await clear()
@@ -121,7 +119,9 @@ export function HistoryPage() {
             options={[
               { value: 'all', label: 'All' },
               { value: 'focus', label: 'Focus' },
-              { value: 'set', label: 'Workout' },
+              ...(events?.some((e) => e.type === 'set')
+                ? [{ value: 'set' as const, label: 'Legacy workout' }]
+                : []),
               { value: 'breathe', label: 'Breathe' },
               { value: 'break', label: 'Breaks' },
               { value: 'nudge', label: 'Nudges' },

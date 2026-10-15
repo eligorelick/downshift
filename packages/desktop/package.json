@@ -2,7 +2,7 @@
   "name": "@downshift/desktop",
   "version": "0.2.0",
   "private": true,
-  "description": "Downshift for Windows: the Downshift app in an Electron window with a tray icon showing live heart rate",
+  "description": "Downshift for Windows: a quiet work and study reset companion with optional heart rate check-ins and guided breathing.",
   "author": "Eli Gorelick",
   "license": "MIT",
   "homepage": "https://eligorelick.github.io/downshift/",

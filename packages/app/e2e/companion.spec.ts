@@ -42,7 +42,7 @@ test('passive demo learns, checks in and offers existing breathing without loggi
   await expect(page.locator('.history-type').getByText('Nudge', { exact: true })).toHaveCount(1)
 })
 
-test('snooze survives reload, Resume learns again and workout suppresses the companion', async ({ page }) => {
+test('snooze survives reload and Resume learns again when a source returns', async ({ page }) => {
   await freshPage(page)
   await startDemo(page, 'resting')
   await go(page, 'home')
@@ -54,9 +54,7 @@ test('snooze survives reload, Resume learns again and workout suppresses the com
   await page.getByRole('button', { name: 'Resume companion', exact: true }).click()
   await expect(page.getByText('Waiting for a heart rate device', { exact: true })).toBeVisible()
   await startDemo(page, 'resting')
-  await go(page, 'workout')
-  await page.getByRole('button', { name: 'Start workout', exact: true }).click()
   await go(page, 'home')
-  await expect(page.getByText('Paused during workout', { exact: true })).toBeVisible()
+  await expect(page.getByText('Learning your baseline', { exact: true })).toBeVisible()
   await expect(page.getByRole('heading', { name: 'Feeling tense?' })).toHaveCount(0)
 })

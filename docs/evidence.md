@@ -1,5 +1,7 @@
 # Evidence behind the defaults
 
+Downshift is a quiet reset companion for work and study. Its active tools are Focus, optional heart rate check-ins and optional breathing. Heart rate provides context, not a diagnosis or productivity score. The complete companion has not been validated as an intervention.
+
 Each default is labeled by the strength of its support: tested in studies, supported by smaller trials or associations, or a reasoned starting point that no study has tested in this form. The full review, with all sources and effect sizes, is in [evidence-review.md](evidence-review.md).
 
 ## What the research supports
@@ -36,7 +38,7 @@ The companion can run independently of manual Focus blocks. It offers a check-in
 | Held for 5 minutes, judged on per-minute medians | Stress lasts minutes; standing up adds about 16 bpm within about 8 seconds and has mostly settled by 30 seconds (still about 9 bpm up) ([Heidelbach et al. 2026](https://pmc.ncbi.nlm.nih.gov/articles/PMC13018822/)); per-second wrist readings are less accurate during rapid heart rate changes and at motion onset, by an amount that depends on the device ([Van Oost et al. 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12568089/)) |
 | The first 5 minutes after companion Start or recovery are ignored; timed Focus resumes use 3 minutes after a break | Heart rate may still be coming down from whatever came before; these settling lengths are product choices, not findings |
 | At least 30 uniquely timed samples per minute; a gap over 15 seconds breaks continuity; duplicate timestamps are ignored | Guards against sparse data counting as sustained change. These are engineering choices, not validated signal-quality or stress thresholds |
-| Pauses during Workout, active breathing and timed breaks; resets on disconnect, readings over 15 seconds old, reported loss of skin contact or a source change | Missing intervals are not reconstructed. Unknown skin-contact status is accepted; it is not proof of good contact. Browsers can suspend background work, and closing the app stops monitoring |
+| Pauses during active breathing and timed breaks; resets on disconnect, readings over 15 seconds old, reported loss of skin contact or a source change | Missing intervals are not reconstructed. Unknown skin-contact status is accepted; it is not proof of good contact. Browsers can suspend background work, and closing the app stops monitoring |
 | A sharp heart rate jump pauses the relative-rise count | An abrupt change may reflect movement or sensor error (our reading of the sources above, not a tested rule). Downshift has no movement detector and cannot establish the cause |
 | "In focus" is the default setting; Home Start enables the independent companion and saves that monitoring choice | Sitting during work or study is an assumption, not a detected condition. Outside timed sessions, movement can make prompts less meaningful |
 | Ordinary prompts: at most one an hour and three a day by default, silent; held until a 1.5-second pause in activity in this window, or 20 seconds regardless | Interruptions cost errors and stress ([Altmann et al. 2014](https://pubmed.ncbi.nlm.nih.gov/23294345/); [Mark et al. 2008](https://ics.uci.edu/~gmark/chi08-mark.pdf)); body-triggered prompts relieved stress no better than random ones ([Schwerdtfeger et al. 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12371293/)) |
@@ -56,7 +58,7 @@ These are product controls, not research-tested treatment components.
 
 ## Focus breaks
 
-These are the School preset, which keeps the 0.1.0 defaults. The Work preset, with a 45-minute block and a 15-minute long break, and the break-type suggestion are in [evidence-workout-work.md](evidence-workout-work.md).
+These are the School preset, which keeps the 0.1.0 defaults. The Work preset, with a 45-minute block and a 15-minute long break, and the break-type suggestion are in [evidence-work-study.md](evidence-work-study.md).
 
 | Default | Why | Status |
 |---|---|---|
@@ -64,7 +66,7 @@ These are the School preset, which keeps the 0.1.0 defaults. The Work preset, wi
 | 8-minute break after blocks of 26 to 50 minutes, 10 after longer | Within ten minutes, longer breaks were associated with larger performance effects; break length did not change the effect on vigor or fatigue (Albulescu et al. 2022) | Starting point |
 | 20-minute break (field data: 20 to 30 minutes) at the end of the first block that brings you to 100 minutes or more of work (with the School default of 25-minute blocks, after four blocks, about two hours with breaks); timing is a starting point | School test data ([Sievertsen et al. 2016](https://doi.org/10.1073/pnas.1516947113)); a lunchtime park walk helped afternoon concentration ([Sianoja et al. 2018](https://doi.org/10.1037/ocp0000083)), so the app suggests stepping outside | Length from field data; timing is a starting point |
 | Move, breathe or rest; leave the phone | Compared with an unstructured break, exercise added vigor and relaxation lowered fatigue ([Blasche et al. 2018](https://doi.org/10.1002/smi.2830)); a phone break restored less ([Kang & Kurtzberg 2019](https://doi.org/10.1556/2006.8.2019.21)) | Tested for mood and fatigue; the phone advice rests on one experiment |
-| Work preset: 45-minute block, 5 to 10 minute breaks, 15-minute long break | In one experience-sampling study of 95 employees, breaks that were preferred and not left too late were associated with more resource recovery ([Hunter & Wu 2016](https://doi.org/10.1037/apl0000045)); we haven't seen a study that tests a block length for office work | Starting point; see [evidence-workout-work.md](evidence-workout-work.md) |
+| Work preset: 45-minute block, 5 to 10 minute breaks, 15-minute long break | In one experience-sampling study of 95 employees, breaks that were preferred and not left too late were associated with more resource recovery ([Hunter & Wu 2016](https://doi.org/10.1037/apl0000045)); we haven't seen a study that tests a block length for office work | Starting point; see [evidence-work-study.md](evidence-work-study.md) |
 | Two-minute warning, two delays, a resume note | Interruptions between actions were rated less annoying than ones in the middle of an action, in 16 people (the paper puts the difference at 56%) ([Adamczyk & Bailey 2004](https://doi.org/10.1145/985692.985727)); a brief plan for resuming reduced attention residue (the paper's four studies supported its hypotheses) ([Leroy & Glomb 2018](https://doi.org/10.1287/orsc.2017.1184), abstract only) | Starting point |
 | Snooze and extend: a break prompt can be snoozed for 5 more minutes (at most twice per block), and a break extended by 5 minutes (once per break) | Lets the person finish the action in hand, which is when interruptions annoy most (see the row above); the 5-minute lengths match the default break and no study tests them | Starting point |
 
