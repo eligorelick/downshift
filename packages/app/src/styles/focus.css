@@ -23,8 +23,9 @@
   text-align: center;
 }
 .fc-time {
+  font-family: var(--font-editorial);
   font-size: var(--text-num);
-  font-weight: 750;
+  font-weight: 500;
   line-height: 1;
   text-align: center;
   letter-spacing: -0.01em;
@@ -50,6 +51,7 @@
 .fc-due,
 .fc-prompt {
   border-left: 4px solid var(--accent);
+  padding-left: var(--space-5);
 }
 .fc-prompt[data-due="high"] {
   border-left-color: var(--warn);

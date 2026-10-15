@@ -1,6 +1,58 @@
+.home {
+  gap: var(--space-6);
+}
+.home-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+.home .page-head h1 {
+  font-size: clamp(2rem, 6vw + 1rem, 5.5rem);
+  overflow-wrap: anywhere;
+}
+.home .page-head {
+  min-width: 0;
+  max-width: 100%;
+}
+.home .page-head p {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.5rem, 2.7vw, 2.5rem);
+  line-height: 1.15;
+  color: var(--accent-text);
+}
+.home-hr {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) 0;
+  min-height: var(--tap);
+  text-decoration: none;
+  color: var(--text);
+  font-size: var(--text-sm);
+}
+.home-hr:hover {
+  color: var(--accent-text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.home-hr > svg {
+  flex: none;
+}
+.home-reading {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-2);
+}
+.home-reading > .muted::before {
+  content: "· ";
+}
 .welcome {
-  border-color: var(--accent);
+  border-left: 3px solid var(--accent);
+  padding: var(--space-4) var(--space-5);
   background: var(--accent-soft);
+  overflow-wrap: anywhere;
 }
 .welcome ul {
   margin: 0;
@@ -9,53 +61,123 @@
   flex-direction: column;
   gap: var(--space-1);
 }
-.home-hr {
-  text-decoration: none;
-  color: var(--text);
-  gap: var(--space-1);
+.mode-list {
+  display: flex;
+  flex-direction: column;
 }
-.home-hr:hover {
-  background: var(--surface-2);
-}
-/* As many columns as fit at 14rem each (one on phones), so the one-line buttons never overflow a card. */
-.mode-grid {
+.mode-row {
   display: grid;
-  gap: var(--space-4);
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-3) var(--space-4);
+  padding: var(--space-5) 0;
+  border-bottom: 1px solid var(--border);
 }
-.mode-grid .card {
-  align-items: flex-start;
+.mode-icon {
+  color: var(--accent);
+  padding-top: var(--space-2);
 }
-.mode-grid .card > :last-child {
-  margin-top: auto;
+.mode-icon svg {
+  width: 100%;
+  height: auto;
+  stroke-width: 1.4;
 }
-/* Keep each button on one line. */
-.mode-grid .btn {
-  white-space: nowrap;
-  padding-inline: var(--space-3);
+.mode-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+.mode-copy h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  overflow-wrap: anywhere;
 }
 .caveat {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
   font-size: var(--text-sm);
-  border-left: 3px solid var(--warn);
-  padding-left: var(--space-3);
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 65ch;
+}
+.caveat svg {
+  flex: none;
+  margin-top: 3px;
+}
+.caveat > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.mode-row > .btn {
+  grid-column: 2;
+  justify-self: start;
+  gap: var(--space-4);
+  min-height: 48px;
+  font-family: var(--font-editorial);
+  font-size: 1.25rem;
+  font-weight: 500;
+  max-width: 100%;
+  min-width: 0;
+}
+.home-today {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.home-today > h2 {
+  font-size: 2rem;
+  letter-spacing: -0.03em;
 }
 .tally {
   margin: 0;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 8rem), 1fr));
   gap: var(--space-4);
 }
 .tally dt {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
   color: var(--text-muted);
 }
 .tally dd {
-  margin: 0;
-  font-size: var(--text-lg);
-  font-weight: 700;
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-editorial);
+  font-size: 2.25rem;
+  line-height: 1.1;
+}
+@media (max-width: 639px) {
+  .mode-row > .btn {
+    grid-column: 1 / -1;
+    justify-self: stretch;
+    padding-inline: var(--space-3);
+  }
 }
 @media (min-width: 640px) {
   .tally {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1150px) {
+  .mode-row {
+    grid-template-columns: 60px minmax(0, 1fr) minmax(190px, 21%);
+    align-items: center;
+    column-gap: var(--space-5);
+    min-height: 174px;
+  }
+  .mode-row > .btn {
+    grid-column: 3;
+    justify-self: stretch;
+  }
+  .home-today {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr);
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .tally > div {
+    padding-left: var(--space-5);
+    border-left: 1px solid var(--border);
   }
 }

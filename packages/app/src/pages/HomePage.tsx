@@ -1,6 +1,6 @@
 import { dayKey, duration } from '@downshift/core'
 import { Button } from '../components/Button'
-import { Card } from '../components/Card'
+import { Icon } from '../components/Icon'
 import { refocusSoon } from '../components/useStageFocus'
 import { askNotifyPermission } from '../platform/notifyPermission'
 import { startBreathe } from '../sessions/breathSession'
@@ -34,9 +34,24 @@ export function HomePage() {
 
   return (
     <div className="page home">
-      <header className="page-head">
-        <h1>Downshift</h1>
-        <p>A calm place to start.</p>
+      <header className="home-head">
+        <div className="page-head">
+          <h1>Downshift</h1>
+          <p>A calm place to start.</p>
+        </div>
+        <a className="home-hr" href="#device">
+          <Icon name="device" />
+          <span className="home-reading">
+            <span role="img" aria-label={live ? `${hr.bpm} beats per minute` : 'No reading'}>
+              <span className="num">{live ? hr.bpm : '--'}</span> bpm
+            </span>
+            <span className="muted">
+              {hr.state === 'connected' && hr.kind === 'simulated'
+                ? 'Demo data'
+                : (STATE_TEXT[hr.state] ?? hr.state)}
+            </span>
+          </span>
+        </a>
       </header>
 
       {!s.welcomed && (
@@ -66,30 +81,19 @@ export function HomePage() {
         </section>
       )}
 
-      <a className="home-hr card" href="#device">
-        <span className="hr-hero">
-          <span
-            className="big num"
-            role="img"
-            aria-label={live ? `${hr.bpm} beats per minute` : 'No reading'}
-          >
-            {live ? hr.bpm : '--'}
+      <div className="mode-list">
+        <section className="mode-row" aria-labelledby="mode-focus">
+          <span className="mode-icon">
+            <Icon name="focus" size={52} />
           </span>
-          <span className="unit">bpm</span>
-        </span>
-        <span className="muted">
-          {hr.state === 'connected' && hr.kind === 'simulated'
-            ? 'Demo data'
-            : (STATE_TEXT[hr.state] ?? hr.state)}
-        </span>
-      </a>
-
-      <div className="mode-grid">
-        <Card title="Focus">
-          <p className="muted">Work in blocks with planned breaks.</p>
-          <p className="caveat">
-            Breaks reduce fatigue. There's no evidence yet that a break schedule raises grades.
-          </p>
+          <div className="mode-copy">
+            <h2 id="mode-focus">Focus</h2>
+            <p>Work in blocks with planned breaks.</p>
+            <p className="caveat">
+              <Icon name="evidence" size={18} />
+              <span>Breaks reduce fatigue. There's no evidence yet that a break schedule raises grades.</span>
+            </p>
+          </div>
           <Button
             onClick={() => {
               // Asked here, during the click, because the Focus page starts the session on arrival.
@@ -98,25 +102,47 @@ export function HomePage() {
             }}
           >
             Start focusing
+            <Icon name="arrow" size={20} />
           </Button>
-        </Card>
-        <Card title="Workout">
-          <p className="muted">A rest timer for the gap between sets.</p>
-          <p className="caveat">
-            Rest times are group averages; heart rate cannot say your muscles have recovered.
-          </p>
-          <Button onClick={() => go('#workout')}>Open workout</Button>
-        </Card>
-        <Card title="Breathe">
-          <p className="muted">Slow, paced breathing. Six breaths a minute by default.</p>
-          <p className="caveat">
-            May lower how tense you feel for a while; not reliably shown to improve performance.
-          </p>
-          <Button onClick={() => startBreathe({ source: 'manual' })}>Start breathing</Button>
-        </Card>
+        </section>
+        <section className="mode-row" aria-labelledby="mode-workout">
+          <span className="mode-icon">
+            <Icon name="workout" size={52} />
+          </span>
+          <div className="mode-copy">
+            <h2 id="mode-workout">Workout</h2>
+            <p>A rest timer for the gap between sets.</p>
+            <p className="caveat">
+              <Icon name="evidence" size={18} />
+              <span>Rest times are group averages; heart rate cannot say your muscles have recovered.</span>
+            </p>
+          </div>
+          <Button onClick={() => go('#workout')}>
+            Open workout <Icon name="arrow" size={20} />
+          </Button>
+        </section>
+        <section className="mode-row" aria-labelledby="mode-breathe">
+          <span className="mode-icon">
+            <Icon name="breathe" size={52} />
+          </span>
+          <div className="mode-copy">
+            <h2 id="mode-breathe">Breathe</h2>
+            <p>Slow, paced breathing. Six breaths a minute by default.</p>
+            <p className="caveat">
+              <Icon name="evidence" size={18} />
+              <span>
+                May lower how tense you feel for a while; not reliably shown to improve performance.
+              </span>
+            </p>
+          </div>
+          <Button onClick={() => startBreathe({ source: 'manual' })}>
+            Start breathing <Icon name="arrow" size={20} />
+          </Button>
+        </section>
       </div>
 
-      <Card title="Today">
+      <section className="home-today" aria-labelledby="today-h">
+        <h2 id="today-h">Today</h2>
         <dl className="tally">
           <div>
             <dt>Focus blocks</dt>
@@ -135,7 +161,7 @@ export function HomePage() {
             <dd className="num">{today.breaths}</dd>
           </div>
         </dl>
-      </Card>
+      </section>
     </div>
   )
 }

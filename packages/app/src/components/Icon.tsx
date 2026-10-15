@@ -4,12 +4,13 @@ const PATHS = {
   home: <path d="M3 11.5 12 4l9 7.5M5.5 10v9.5h13V10" />,
   focus: (
     <>
-      <circle cx="12" cy="12" r="8.5" />
-      <circle cx="12" cy="12" r="3.5" />
+      <circle cx="12" cy="13" r="8" />
+      <path d="M9 2h6M12 9v4l3 2M18 6l1.5-1.5" />
     </>
   ),
   workout: <path d="M3 9.5v5M6.5 7v10M17.5 7v10M21 9.5v5M6.5 12h11" />,
-  breathe: <path d="M3 12c3-5 6-5 9 0s6 5 9 0" />,
+  breathe: <path d="M3 8h11a3 3 0 1 0-3-3M3 12h15a3 3 0 1 0 0-6M3 16h9a3 3 0 1 1-3 3" />,
+  arrow: <path d="M4 12h15M14 7l5 5-5 5" />,
   history: (
     <>
       <path d="M4 12a8 8 0 1 0 2.6-5.9L4 8.5" />

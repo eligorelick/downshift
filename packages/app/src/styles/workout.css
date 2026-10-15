@@ -35,8 +35,9 @@
   align-items: center;
 }
 .wk-val {
+  font-family: var(--font-editorial);
   font-size: clamp(2rem, 10vw, 3.25rem);
-  font-weight: 750;
+  font-weight: 500;
   line-height: 1.05;
 }
 .wk-lab {
@@ -51,7 +52,8 @@
   border-radius: var(--radius-lg);
   font: inherit;
   font-size: clamp(2.25rem, 11vw, 3.5rem);
-  font-weight: 800;
+  font-family: var(--font-editorial);
+  font-weight: 500;
   letter-spacing: 0.01em;
   cursor: pointer;
   background: var(--accent);
@@ -176,9 +178,10 @@
   gap: var(--space-1);
 }
 .ring-time {
+  font-family: var(--font-editorial);
   /* Scales with the ring (same size expression), so even "11:41" stays inside it on short windows. */
   font-size: calc(min(48vw, 26dvh, 300px) * 0.24);
-  font-weight: 800;
+  font-weight: 500;
   line-height: 1;
 }
 .ring-sub {

@@ -22,3 +22,26 @@ Every DOI, PMID and PMC identifier was checked against Crossref and NCBI, and ea
 | [platform-support.md](platform-support.md) | Which browsers, phones and heart rate devices work, and why there is no WHOOP or Fitbit login. |
 | [troubleshooting.md](troubleshooting.md) | A device won't connect, alerts don't arrive, Windows blocks the app, the site won't update. |
 | [architecture.md](architecture.md) | How the code is organized, how a heart rate reading flows, the Electron security model, tests and CI. |
+
+## Interface screenshots
+
+The Field Guide interface uses warm paper, olive controls, editorial typography and ruled sections. These images are captures of the running app; the active sessions work without a heart rate device.
+
+<img src="images/home-light.png" alt="Downshift Home: three mode rows and today's counts in the Field Guide light theme" width="900">
+
+<img src="images/focus-break-dark.png" alt="Focus break with the Tense, Tired and Fine choices, dark theme" width="200"> <img src="images/workout-rest-light.png" alt="Workout rest timer counting toward the minimum, light theme" width="200"> <img src="images/breathe-dark.png" alt="Guided breathing with Pause and Stop, dark theme" width="200">
+
+To refresh these screenshots locally, build the app and start its production preview in one terminal:
+
+```sh
+bun run build
+bun run --cwd packages/app preview --host 127.0.0.1 --port 4174
+```
+
+Then, from `packages/app` in another terminal:
+
+```sh
+bun run scripts/capture-ui.ts
+```
+
+The capture uses a fresh browser profile, the app's existing test clock to skip waiting, and reduced motion. It does not read or alter your own settings or history. No Windows binary is currently published on GitHub Releases; these screenshots do not imply that one is available.
