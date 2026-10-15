@@ -6,13 +6,11 @@ import { FocusPage } from './pages/FocusPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { HomePage } from './pages/HomePage'
 import { Settings } from './pages/Settings'
-import { WorkoutPage } from './pages/WorkoutPage'
 import { type PageKey, useRoute } from './state/route'
 
 const PAGES: Record<PageKey, () => JSX.Element> = {
   home: HomePage,
   focus: FocusPage,
-  workout: WorkoutPage,
   breathe: BreathePage,
   history: HistoryPage,
   device: Device,

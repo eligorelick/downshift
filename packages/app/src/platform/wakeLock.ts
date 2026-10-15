@@ -1,7 +1,7 @@
 let lock: WakeLockSentinel | null = null
-// Focus, Workout and Breathe can overlap (a breathing break during a focus block), so the lock is held
+// Focus and Breathe can overlap (a breathing break during a focus block), so the lock is held
 // while any of them wants it and one finishing does not let the screen sleep under another.
-export type WakeLockOwner = 'focus' | 'workout' | 'breathe'
+export type WakeLockOwner = 'focus' | 'breathe'
 const owners = new Set<WakeLockOwner>()
 const wanted = (): boolean => owners.size > 0
 let inFlight: Promise<void> | null = null

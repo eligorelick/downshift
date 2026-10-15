@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { advance, freshPage, go, startDemo } from './helpers'
+import { nativeBluetoothPage, nativeSample } from './native-bluetooth'
 
 test('following a nav link moves keyboard focus to the new page heading', async ({ page }) => {
   await freshPage(page)
@@ -16,7 +17,7 @@ test('at 320 px wide no page scrolls sideways, even with the demo badge showing'
   // With no device the badge reads "No device"; that alone used to push the Settings icon off screen.
   expect(await sideways()).toBeLessThanOrEqual(0)
   await startDemo(page, 'resting')
-  for (const p of ['home', 'focus', 'workout', 'breathe', 'history', 'device', 'evidence', 'settings']) {
+  for (const p of ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings']) {
     await go(page, p)
     await expect(page.locator('main h1, main h2').first()).toBeVisible()
     expect(await sideways(), `#${p}`).toBeLessThanOrEqual(0)
@@ -31,13 +32,13 @@ test('at 320 px wide no page scrolls sideways, even with the demo badge showing'
   }
 })
 
-test('at 320 px a three-digit demo heart rate still fits the top bar', async ({ page }) => {
+test('at 320 px a three-digit device heart rate still fits the top bar', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 })
-  await freshPage(page)
-  await startDemo(page, 'workout-sets')
-  // The demo climbs from 90 to 150 bpm over its first 40 s.
-  await advance(page, 36, 6, 400)
-  await expect(page.locator('.hr-bpm').first()).toHaveText(/^1\d\d$/)
+  await nativeBluetoothPage(page)
+  await go(page, 'device')
+  await page.getByRole('button', { name: 'Connect a heart rate device', exact: true }).click()
+  await nativeSample(page, 128)
+  await expect(page.locator('.hr-bpm').first()).toHaveText('128')
   await go(page, 'home')
   expect(
     await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),

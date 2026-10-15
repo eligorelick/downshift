@@ -1,11 +1,10 @@
 import { registerSW } from 'virtual:pwa-register'
 import { getFocus } from '../sessions/focusSession'
-import { getStage } from '../sessions/workoutSession'
 import { getHeartRate } from '../state/hrStore'
 
 const CHECK_MS = 30_000
 
-// Applying a new version reloads the page, and a focus block, workout, breathing session (including its
+// Applying a new version reloads the page, and a focus block, breathing session (including its
 // unsaved "how tense now" step) or an open sharpness question lives only in memory. So a downloaded update
 // waits until none is open, then applies itself.
 export function installUpdates(): void {
@@ -15,13 +14,7 @@ export function installUpdates(): void {
     // A reload also drops a heart rate connection, and reconnecting needs a tap.
     const hr = getHeartRate().state
     const linked = hr === 'connected' || hr === 'connecting' || hr === 'reconnecting' || hr === 'requesting'
-    return (
-      !f.active &&
-      !f.askSharpness &&
-      getStage() !== 'active' &&
-      !location.hash.startsWith('#breathe') &&
-      !linked
-    )
+    return !f.active && !f.askSharpness && !location.hash.startsWith('#breathe') && !linked
   }
   const apply = (): void => {
     if (!waiting || !idle()) return

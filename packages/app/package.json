@@ -2,7 +2,7 @@
   "name": "@downshift/app",
   "version": "0.2.0",
   "private": true,
-  "description": "Focus blocks, rest timers and guided breathing, with optional live heart rate from a Bluetooth heart rate monitor.",
+  "description": "A quiet reset companion for work and study, with focus blocks, optional heart rate check-ins and guided breathing.",
   "author": "Eli Gorelick",
   "license": "MIT",
   "homepage": "https://eligorelick.github.io/downshift/",

@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test'
-import { freshPage, go, startDemo } from './helpers'
+import { freshPage, go } from './helpers'
 
 declare global {
   interface Window {
@@ -46,15 +46,14 @@ test('notification permission is asked when focus is started from Home', async (
   expect(await asks(page)).toBe(1)
 })
 
-test('notification permission is asked when a workout starts', async ({ page }) => {
+test('a retired workout deep link never starts a session or requests notification permission', async ({
+  page,
+}) => {
   await stubNotification(page, 'default')
   await freshPage(page)
-  await startDemo(page, 'workout-sets')
-  await go(page, 'workout')
+  await go(page, 'workout?start=1')
+  await expect(page.locator('main')).toHaveAttribute('data-page', 'home')
   expect(await asks(page)).toBe(0)
-  await page.getByRole('button', { name: 'Start workout' }).click()
-  await expect(page.getByRole('button', { name: 'Set done' })).toBeVisible()
-  expect(await asks(page)).toBe(1)
 })
 
 test('a decided notification permission is never asked again', async ({ page }) => {

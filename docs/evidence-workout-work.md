@@ -1,6 +1,8 @@
-# Evidence for the Workout and Work modes
+# Historical evidence for the former Workout and Work modes
 
-This covers the two newer modes; background is in [evidence.md](evidence.md). Defaults carry the same labels as there: tested in studies, supported by smaller trials or associations, or a reasoned starting point that no study has tested in this form. Sources were checked against PubMed or the publisher record. Unless a source says otherwise, we read only its abstract or database record. Lee 2015, Moghaddam 2026, Buskard 2017 and Buxton 2024 were read in full; the Fidalgo and Støve full texts are paywalled.
+> **Historical research archive.** Workout is retired from the current work and study companion. This document preserves the earlier combined review, including its settings, limitations and citations; it is not a description of the current interface. Use [evidence.md](evidence.md) and [evidence-work-study.md](evidence-work-study.md) for current defaults, and [legacy-workout.md](legacy-workout.md) for the preserved code and history.
+
+This review covered the two then-newer modes; background is in [evidence.md](evidence.md). Defaults carry the same labels as there: tested in studies, supported by smaller trials or associations, or a reasoned starting point that no study has tested in this form. Sources were checked against PubMed or the publisher record. Unless a source says otherwise, we read only its abstract or database record. Lee 2015, Moghaddam 2026, Buskard 2017 and Buxton 2024 were read in full; the Fidalgo and Støve full texts are paywalled.
 
 ## Workout mode: rest between sets
 

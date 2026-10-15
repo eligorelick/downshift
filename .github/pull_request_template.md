@@ -7,4 +7,4 @@
 
 ## Evidence
 
-If this changes a default, a breathing technique, a rest minimum or the nudge rule, link the research and update the matching file (`docs/evidence.md`, `docs/evidence-workout-work.md` or `docs/evidence-cognition.md`), and `packages/app/src/content/evidence.ts`.
+If this changes a default, a breathing technique or the nudge rule, link the research and update the matching file (`docs/evidence.md`, `docs/evidence-work-study.md` or `docs/evidence-cognition.md`), and `packages/app/src/content/evidence.ts`.

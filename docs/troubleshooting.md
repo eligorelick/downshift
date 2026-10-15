@@ -41,13 +41,13 @@ The Bluetooth log on the **Device** page records which device the app tried to c
 
 ## There is no sound or voice
 
-- Check that **Mute all sound** is off in Settings and the volume is up.
+- Fresh installs and preference resets are silent. To opt in, turn **Mute all sound** off in Settings, raise the volume and enable the guidance or tone you want.
 - Browsers only play sound after you have interacted with the page, so start sessions by tapping a button.
-- Spoken cues use your system's voices (some browsers use an online voice service). If there is no voice, add one in your system's speech settings.
+- For spoken cues, enable **Spoken guidance**, choose a **Guidance voice** and use **Preview voice**. Automatic selection uses local voices only; an explicitly chosen remote voice may use the browser's voice service. If no local voice is available, add one in your system's speech settings. Mute, guidance off or zero volume also prevents preview.
 
 ## Notifications do not show
 
-Downshift asks for permission when you start a Focus session or Workout, until you answer. If you declined, allow notifications in the browser's site settings. System notifications appear only while the page is in the background; on phones they may be late while the screen is locked.
+Use **Enable notifications** to request the optional browser permission. If you declined, allow notifications in the browser's site settings. System notifications appear only while the page is in the background; on phones they may be late while the screen is locked. Permission cannot make continuous background heart rate monitoring reliable.
 
 ## Windows blocks the installer
 
@@ -57,7 +57,7 @@ If there is no **Run anyway** option, **Smart App Control** is on (Windows Secur
 
 ## The website does not update
 
-The app is cached for offline use. When a new version has downloaded, it reloads itself once nothing is running: no focus block, workout, breathing session or open question, and no connected device. To update sooner, close every tab or window of it and reopen it. If it still shows old content, clear the site's data in browser settings; this also deletes your history, so export it from History first.
+The app is cached for offline use. When a new version has downloaded, it reloads itself once there is no Focus block or open sharpness question, the Breathe page is closed, and no device is connected or connecting. The saved companion monitoring preference does not prevent a refresh while it is waiting for a device. To update sooner, stop running sessions, close every tab or window of it and reopen it. If it still shows old content, clear the site's data in browser settings; this also deletes your history, so export it from History first.
 
 ## My settings or history disappeared
 
@@ -65,8 +65,8 @@ Settings and history live in browser storage. Private windows, "clear site data 
 
 ## The nudge never appears
 
-That is expected most of the time. It needs a focus block (about 15 minutes in at the earliest, to learn a baseline), then a rise of about 15 bpm above that baseline held for five minutes. In the one real-exam study we found, the rise was about 4 to 9 bpm ([Pakhomov et al. 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7094857/)), so it often stays quiet.
+That is expected most of the time. Start the heart rate companion on Home, or use **In focus** monitoring with a timed Focus block. The independent companion first settles for five minutes and then needs enough usable minutes to learn a baseline; a rise of about 15 bpm must then hold for five minutes. Signal gaps, contact loss and source changes restart learning; active breathing, timed breaks and Snooze pause check-ins. In the one real-exam study we found, the rise was about 4 to 9 bpm ([Pakhomov et al. 2020](https://pmc.ncbi.nlm.nih.gov/articles/PMC7094857/)), so it often stays quiet. These rules are product starting points, not validated stress detection.
 
-## Workout says "heart rate unreliable"
+## I used the former Workout feature
 
-Wrist sensors tend to under-read during lifting, so the app flags sudden jumps and lost contact instead of acting on them. If readings stop, only the rest timer is used, and the rest minimum always applies. A chest strap is the most reliable option. See [evidence-workout-work.md](evidence-workout-work.md).
+The Workout interface and settings are retired from the current work and study companion. Existing history remains available for export. See [legacy-workout.md](legacy-workout.md) for the preserved code and [the historical research archive](evidence-workout-work.md) for its original evidence and limitations.

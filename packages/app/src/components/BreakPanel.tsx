@@ -3,7 +3,7 @@ import { useEffect, useId, useRef, useState } from 'react'
 import { type FocusView, answerFeeling, startBreakBreathe } from '../sessions/focusSession'
 import { Button } from './Button'
 import { Card } from './Card'
-import { fmtClock } from './RestRing'
+import { fmtClock } from './formatClock'
 
 const FEELINGS: ReadonlyArray<{ value: Feeling; label: string }> = [
   { value: 'tense', label: 'Tense' },

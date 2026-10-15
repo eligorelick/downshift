@@ -27,7 +27,6 @@ import { STALE_MS, getHeartRate, onHeartRate, subscribeHeartRate } from '../stat
 import * as logStore from '../state/logStore'
 import { getSettings, subscribeSettings, updateSettings } from '../state/settingsStore'
 import { isBreathing, startBreathe, subscribeBreathing } from './breathSession'
-import { getStage, subscribeWorkout } from './workoutSession'
 
 // 0.1.0 held a prompt until the user had paused for 1.5 s so it never lands mid-sentence, and showed it
 // after 20 s regardless. The browser only sees activity in this window, not system-wide as 0.1.0 did.
@@ -88,7 +87,6 @@ export interface CompanionView {
   status:
     | 'stopped'
     | 'snoozed'
-    | 'workout'
     | 'breathing'
     | 'break'
     | 'waiting'
@@ -213,7 +211,7 @@ export function focusTimes(t: number): { remainingMs: number; workedMs: number }
 
 function wantMonitoring(): boolean {
   const s = getSettings()
-  if (s.nudgeSnoozedUntil > now() || getStage() === 'active' || isBreathing()) return false
+  if (s.nudgeSnoozedUntil > now() || isBreathing()) return false
   const mode = s.nudgeMode
   if (mode === 'always') return clock.phase !== 'break' && clock.phase !== 'backDue'
   return mode === 'focus' && active && (clock.phase === 'work' || clock.phase === 'breakDue')
@@ -238,7 +236,6 @@ function companionView(): CompanionView {
   let status: CompanionView['status'] = 'stopped'
   if (s.nudgeMode === 'always') {
     if (s.nudgeSnoozedUntil > now()) status = 'snoozed'
-    else if (getStage() === 'active') status = 'workout'
     else if (isBreathing()) status = 'breathing'
     else if (clock.phase === 'break' || clock.phase === 'backDue') status = 'break'
     else if (lastGoodAt === null) status = signalReason
@@ -472,10 +469,6 @@ if (typeof window !== 'undefined') {
   }
   subscribeSettings(settingsChanged)
   subscribeHeartRate(() => {
-    reconcileSignal(now())
-    emit()
-  })
-  subscribeWorkout(() => {
     reconcileSignal(now())
     emit()
   })

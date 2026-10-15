@@ -8,21 +8,22 @@ test('returning Home prioritizes the companion and keeps all modes and daily tal
   await freshPage(page)
   await page.getByRole('button', { name: 'Got it', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Start companion', exact: true })).toBeInViewport()
-  for (const name of ['Start focusing', 'Open workout', 'Start breathing']) {
+  for (const name of ['Start focusing', 'Start breathing']) {
     const action = page.getByRole('button', { name, exact: true })
     await action.focus()
     await expect(action).toBeInViewport()
   }
   await page.getByRole('heading', { name: 'Today', exact: true }).scrollIntoViewIfNeeded()
   await expect(page.getByRole('heading', { name: 'Today', exact: true })).toBeInViewport()
+  await page.locator('.tally').scrollIntoViewIfNeeded()
   await expect(page.locator('.tally')).toBeInViewport({ ratio: 1 })
 })
 
-test('320 pixel enlarged text keeps Workout and Evidence within the viewport', async ({ page }) => {
+test('320 pixel enlarged text keeps Focus and Evidence within the viewport', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
   await freshPage(page)
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
-  for (const route of ['workout', 'evidence']) {
+  for (const route of ['focus', 'evidence']) {
     await go(page, route)
     await expect(page.locator('main h1').first()).toBeVisible()
     expect(
@@ -68,11 +69,11 @@ test('interrupted and repeated breathing sessions are each saved exactly once', 
   await expect(page.locator('.history-item', { hasText: 'Breathe' })).toHaveCount(2)
 })
 
-test('enlarged text preserves access to all pages and the three Home actions', async ({ page }) => {
+test('enlarged text preserves access to all pages and the Home actions', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await freshPage(page)
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
-  for (const route of ['home', 'focus', 'workout', 'breathe', 'history', 'device', 'evidence', 'settings']) {
+  for (const route of ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings']) {
     await go(page, route)
     await expect(page.locator('main h1').first()).toBeVisible()
     expect(
@@ -81,7 +82,7 @@ test('enlarged text preserves access to all pages and the three Home actions', a
     ).toBeLessThanOrEqual(1)
   }
   await go(page, 'home')
-  for (const name of ['Start focusing', 'Open workout', 'Start breathing']) {
+  for (const name of ['Start focusing', 'Start breathing']) {
     const action = page.getByRole('button', { name, exact: true })
     await action.focus()
     await expect(action).toBeFocused()
@@ -95,9 +96,9 @@ test('200 percent text on a narrow phone keeps navigation and pages within the v
   await page.setViewportSize({ width: 390, height: 844 })
   await freshPage(page)
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
-  await startDemo(page, 'workout-sets')
+  await startDemo(page, 'resting')
   await advance(page, 36, 6, 400)
-  for (const route of ['home', 'focus', 'workout', 'breathe', 'history', 'device', 'evidence', 'settings']) {
+  for (const route of ['home', 'focus', 'breathe', 'history', 'device', 'evidence', 'settings']) {
     await go(page, route)
     await expect(page.locator('main h1').first()).toBeVisible()
     expect(
@@ -113,7 +114,7 @@ test('Home caveats reflow at 320 pixels with 200 percent text', async ({ page })
   await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
   await go(page, 'home')
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
-  for (const name of ['Start focusing', 'Open workout', 'Start breathing']) {
+  for (const name of ['Start focusing', 'Start breathing']) {
     const action = page.getByRole('button', { name, exact: true })
     await action.focus()
     await expect(action).toBeFocused()
@@ -131,7 +132,7 @@ test('Device reading and demo selector fit at 320 pixels with 200 percent text',
   await page.addStyleTag({
     content: 'html { font-size: 200% !important; } body { font-family: Verdana, system-ui !important; }',
   })
-  await startDemo(page, 'workout-sets')
+  await startDemo(page, 'resting')
   await advance(page, 36, 6, 400)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
   const scenario = page.getByLabel('Demo scenario')

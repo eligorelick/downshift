@@ -8,11 +8,12 @@ Downshift has been tested with a WHOOP 5.0 on the Windows app. If you try it wit
 
 ## Guidelines
 
-- **Defaults need a source.** If you change a default (a timer, a breathing pattern, a rest minimum or the nudge rule), cite the research and say how strong it is: tested in studies, smaller trials or associations, or a reasoned starting point. Update the matching file in `docs/` and `packages/app/src/content/evidence.ts` in the same pull request. Link a DOI or PubMed ID you've checked, and prefer systematic reviews over single studies.
-- **Don't overclaim.** The app asks how people feel; it doesn't tell them. It doesn't promise better grades or gains.
-- **Everything stays on the device.** No telemetry, accounts or network calls.
+- **Keep the scope on work and study.** Focus blocks, optional heart rate check-ins and optional breathing support a quiet reset. The former Workout interface is retired; see [docs/legacy-workout.md](docs/legacy-workout.md) before touching preserved code or historical records.
+- **Defaults need a source.** If you change a default (a timer, a breathing pattern or the nudge rule), cite the research and say how strong it is: tested in studies, smaller trials or associations, or a reasoned starting point. Update the matching current file in `docs/` and `packages/app/src/content/evidence.ts` in the same pull request. Preserve historical research as historical. Link a DOI or PubMed ID you've checked, and prefer systematic reviews over single studies.
+- **Don't overclaim.** The app asks how people feel; it doesn't tell them. It doesn't promise better grades or productivity.
+- **Keep personal data on the device.** No telemetry or accounts. Automatic voice selection uses local voices; an explicitly selected remote voice service may receive generic cue text, never heart rate values.
 - **Prompts have a cost.** A new prompt needs a clear reason and a limit on how often it appears.
-- **Heart rate is advisory.** In Workout, heart rate never shortens the rest minimum.
+- **Heart rate is context.** It cannot diagnose stress, fatigue or readiness. Check-ins need Snooze and Stop controls; breathing stays optional. Preserve silent defaults and opt-in sound and voice.
 
 ## Setup
 
@@ -39,7 +40,7 @@ bun run e2e            # first run: cd packages/app && bunx playwright install c
 
 ## Where code goes
 
-`packages/core` holds everything that can be tested without a browser: the nudge rule, the focus clock, the rest coach, breathing patterns, settings and the log format. Put new logic there, with tests in `packages/core/test`. Time-dependent functions take `now` as an argument; `core` never reads the clock. Keep `packages/app` thin.
+`packages/core` holds everything that can be tested without a browser: the nudge rule, the focus clock, breathing patterns, settings and the log format. Put new logic there, with tests in `packages/core/test`. Time-dependent functions take `now` as an argument; `core` never reads the clock. Keep `packages/app` thin. Preserved legacy modules are documented in [docs/legacy-workout.md](docs/legacy-workout.md).
 
 To work without a device, use **Device → Try demo data**. The browser tests use the same simulated source and move `window.__downshiftClock.offset` to skip time.
 

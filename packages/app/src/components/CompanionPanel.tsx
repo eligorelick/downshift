@@ -18,7 +18,6 @@ import '../styles/companion.css'
 const STATUS: Record<CompanionView['status'], string> = {
   stopped: 'Companion stopped',
   snoozed: 'Snoozed',
-  workout: 'Paused during workout',
   breathing: 'Paused during breathing',
   break: 'Paused during your break',
   waiting: 'Waiting for a heart rate device',
@@ -140,9 +139,8 @@ export function CompanionPanel() {
           {s.dailyCap} a day. A sustained high-heart-rate check-in has a separate hourly limit.
         </p>
         <p>
-          Monitoring pauses during Workout, breathing and timed breaks. Snooze lasts 15 minutes; Stop clears
-          pending check-ins. No Focus blocks are logged by the companion.{' '}
-          <a href="#evidence">Read the evidence.</a>
+          Monitoring pauses during breathing and timed breaks. Snooze lasts 15 minutes; Stop clears pending
+          check-ins. No Focus blocks are logged by the companion. <a href="#evidence">Read the evidence.</a>
         </p>
       </details>
       <p className="companion-foot muted small">

@@ -215,7 +215,7 @@ a {
   bottom: 0;
   z-index: 20;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   padding-bottom: env(safe-area-inset-bottom);
   padding-left: env(safe-area-inset-left);
   padding-right: env(safe-area-inset-right);
@@ -338,8 +338,7 @@ a {
     min-width: 0;
     padding: var(--space-7) calc(var(--space-7) + env(safe-area-inset-right)) var(--space-7) var(--space-7);
   }
-  .main[data-page="focus"],
-  .main[data-page="workout"] {
+  .main[data-page="focus"] {
     max-width: 1040px;
   }
 }

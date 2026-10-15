@@ -14,7 +14,7 @@ export default defineConfig({
         name: 'Downshift',
         short_name: 'Downshift',
         description:
-          'Focus blocks, rest timers and guided breathing, with optional live heart rate from a Bluetooth heart rate monitor.',
+          'A quiet reset companion for work and study, with focus blocks, optional heart rate check-ins and guided breathing.',
         theme_color: '#505e43',
         background_color: '#f4f1e8',
         display: 'standalone',
