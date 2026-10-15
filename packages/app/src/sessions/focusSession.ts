@@ -25,6 +25,7 @@ import { acquireWakeLock, releaseWakeLock } from '../platform/wakeLock'
 import { now } from '../state/clock'
 import { STALE_MS, getHeartRate, onHeartRate, subscribeHeartRate } from '../state/hrStore'
 import * as logStore from '../state/logStore'
+import { parseHash } from '../state/route'
 import { getSettings, subscribeSettings, updateSettings } from '../state/settingsStore'
 import { isBreathing, startBreathe, subscribeBreathing } from './breathSession'
 
@@ -371,11 +372,10 @@ function showPrompt(info: NudgePromptInfo): void {
     updateSettings({ lastHighNudgeAt: t })
   }
   prompt = { ...info, shownAt: t }
-  // Silent by default. Off the Focus page (or tab) it shows a banner or notification; with sound on it also
-  // plays a tone, and on the Focus page only the tone, since the card is already in view.
-  const away =
-    document.hidden ||
-    (!location.hash.startsWith('#focus') && !location.hash.startsWith('#home') && location.hash !== '')
+  // Home and Focus already show the check-in card. Use the rendered route so retired/unknown hashes
+  // that fall back to Home do not send someone an unnecessary "open Home" notice.
+  const page = parseHash(location.hash).page
+  const away = document.hidden || (page !== 'focus' && page !== 'home')
   if (s.promptSound || away) {
     alert({
       title: info.due === 'tense' ? 'Feeling tense?' : `Heart rate at or above ${info.highLimit} bpm`,

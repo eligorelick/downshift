@@ -26,6 +26,24 @@ async function learnBaseline(page: Page): Promise<void> {
   await expect(companion(page).getByText('Watching your heart rate', { exact: true })).toBeVisible()
 }
 
+test('a check-in on the retired route fallback does not ask the user to open Home again', async ({
+  page,
+}) => {
+  await nativeBluetoothPage(page)
+  await go(page, 'settings')
+  await page.getByRole('slider', { name: 'Rise above baseline', exact: true }).press('Home')
+  await page.getByRole('slider', { name: 'Held for', exact: true }).press('Home')
+  await connectNative(page)
+  await go(page, 'workout?start=1')
+  await companion(page).getByRole('button', { name: 'Start companion', exact: true }).click()
+  await nativeSample(page, 70, true, 0)
+  await learnBaseline(page)
+  await nativeStream(page, 3 * 60, 82)
+  await nativeAdvance(page, 2)
+  await expect(prompt(page)).toBeVisible()
+  expect(await page.getByText('Open Downshift Home or Focus to check in.', { exact: true }).count()).toBe(0)
+})
+
 test('a queued high check-in respects a newer cooldown received from another tab', async ({ page }) => {
   await startConnected(page)
   await learnBaseline(page)
