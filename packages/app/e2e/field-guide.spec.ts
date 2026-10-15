@@ -105,8 +105,14 @@ test('Home caveats reflow at 320 pixels with 200 percent text', async ({ page })
 
 test('Device reading and demo selector fit at 320 pixels with 200 percent text', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 844 })
+  await page.addInitScript(() => {
+    Reflect.deleteProperty(Navigator.prototype, 'bluetooth')
+  })
   await freshPage(page)
-  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
+  // Verdana exercises wider control labels on Windows; Linux retains its system font fallback.
+  await page.addStyleTag({
+    content: 'html { font-size: 200% !important; } body { font-family: Verdana, system-ui !important; }',
+  })
   await startDemo(page, 'workout-sets')
   await advance(page, 36, 6, 400)
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
