@@ -1,5 +1,9 @@
 /* Device page only. Built on the shared tokens. */
 
+.main[data-page="device"] .hr-hero {
+  flex-wrap: wrap;
+}
+
 .notice {
   display: flex;
   flex-direction: column;
@@ -49,7 +53,13 @@
   gap: var(--space-2);
 }
 
+.select-field {
+  min-width: 0;
+  max-width: 100%;
+}
 .select-field select {
+  min-width: 0;
+  max-width: 100%;
   min-height: var(--tap);
   padding: var(--space-2) var(--space-4);
   font: inherit;

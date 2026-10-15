@@ -102,3 +102,16 @@ test('Home caveats reflow at 320 pixels with 200 percent text', async ({ page })
     await expect(action).toBeInViewport()
   }
 })
+
+test('Device reading and demo selector fit at 320 pixels with 200 percent text', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 844 })
+  await freshPage(page)
+  await page.addStyleTag({ content: 'html { font-size: 200% !important; }' })
+  await startDemo(page, 'workout-sets')
+  await advance(page, 36, 6, 400)
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(1)
+  const scenario = page.getByLabel('Demo scenario')
+  await scenario.selectOption('stress-rise')
+  await expect(scenario).toHaveValue('stress-rise')
+  expect(await scenario.evaluate((element) => element.getBoundingClientRect().right)).toBeLessThanOrEqual(320)
+})
