@@ -3,21 +3,20 @@
 Focus blocks, rest timers and guided breathing, with optional live heart rate from a WHOOP or any other Bluetooth heart rate monitor.
 
 [![CI](https://github.com/eligorelick/downshift/actions/workflows/ci.yml/badge.svg)](https://github.com/eligorelick/downshift/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/eligorelick/downshift)](https://github.com/eligorelick/downshift/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**[Open the web app](https://eligorelick.github.io/downshift/)** · **[Download for Windows](https://github.com/eligorelick/downshift/releases/latest)**
+**[Open the web app](https://eligorelick.github.io/downshift/)** · **[Windows release status](https://github.com/eligorelick/downshift/releases)**
 
 <p>
-  <img src="docs/images/home-light.png" alt="Downshift's Home page on desktop, light theme" width="640">
+  <img src="docs/images/home-light.png" alt="Field Guide: Downshift Home on desktop in the light theme" width="900">
 </p>
 <p>
-  <img src="docs/images/focus-break-dark.png" alt="Focus mode on a phone: a break asking how you feel" width="200">
-  <img src="docs/images/workout-rest-light.png" alt="Workout mode on a phone: the rest timer counting toward its minimum" width="200">
-  <img src="docs/images/breathe-dark.png" alt="Breathe mode on a phone: the breathing pacer" width="200">
+  <img src="docs/images/focus-break-dark.png" alt="Field Guide on a phone: Focus break and optional feeling check-in, dark theme" width="200">
+  <img src="docs/images/workout-rest-light.png" alt="Field Guide on a phone: Workout rest counting toward its minimum, light theme" width="200">
+  <img src="docs/images/breathe-dark.png" alt="Field Guide on a phone: breathing pacer with Pause and Stop, dark theme" width="200">
 </p>
 
-Downshift runs in the browser and as a Windows app. It works without a heart rate device; connecting one adds advisory cues. Every default, from block lengths and rest minimums to breathing pace and the heart rate prompt, comes from published research, and the app shows how strong the support for each one is.
+Downshift runs in the browser and can also be run from source as a Windows app. It works without a heart rate device; connecting one adds advisory cues. Every default, from block lengths and rest minimums to breathing pace and the heart rate prompt, comes from published research, and the app shows how strong the support for each one is.
 
 ## Features
 
@@ -36,7 +35,7 @@ Heart rate needs a browser with Web Bluetooth: Chrome or Edge on Windows, macOS,
 
 ## Getting started
 
-**Windows app.** Download the installer or the portable `.exe` from the [latest release](https://github.com/eligorelick/downshift/releases/latest). It adds a tray icon with your live heart rate and native notifications. The builds aren't code-signed yet, so SmartScreen will warn about an unknown publisher: choose **More info → Run anyway**. If Smart App Control is on, it blocks unsigned apps; install the website from Edge instead (Edge menu → **Apps** → **Install this site as an app**).
+**Windows app.** No Windows installer or portable executable is published on [GitHub Releases](https://github.com/eligorelick/downshift/releases) yet. Use the web app, or run the Electron app from source with `bun run desktop`. The Windows shell adds a tray icon with live heart rate and native notifications.
 
 **Website.** Open <https://eligorelick.github.io/downshift/> in Chrome or Edge, or in Bluefy on iPhone. You can install it as an app, and it works offline after the first visit.
 

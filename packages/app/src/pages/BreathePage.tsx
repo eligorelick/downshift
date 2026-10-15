@@ -320,33 +320,35 @@ function Flow({ source: source0, pattern0, minutes0, tense0 }: FlowProps) {
           </div>
         </Card>
       )}
-      <TechniqueGuide pattern={patternKey} minutes={minutes} onChoose={choose} />
-      <Card title="Your session">
-        <div className="breathe-opts">
-          <Segmented
-            label="Pattern"
-            value={patternKey}
-            options={PATTERNS.map((p) => ({ value: p.key, label: SHORT_NAMES[p.key] }))}
-            onChange={(p) => choose(p, minutes)}
-          />
-          <p className="pattern-note">{pattern.note}</p>
-          <Segmented
-            label="Length"
-            value={String(minutes) as '2' | '5'}
-            options={[
-              { value: '2', label: '2 minutes' },
-              { value: '5', label: '5 minutes' },
-            ]}
-            onChange={(v) => choose(patternKey, v === '2' ? 2 : 5)}
-          />
-        </div>
-        <RatingScale value={before} onChange={setBefore} legend="How tense do you feel? (optional)" />
-        <div className="row">
-          <Button size="lg" onClick={begin}>
-            Begin
-          </Button>
-        </div>
-      </Card>
+      <div className="breathe-setup">
+        <Card title="Your session">
+          <div className="breathe-opts">
+            <Segmented
+              label="Pattern"
+              value={patternKey}
+              options={PATTERNS.map((p) => ({ value: p.key, label: SHORT_NAMES[p.key] }))}
+              onChange={(p) => choose(p, minutes)}
+            />
+            <p className="pattern-note">{pattern.note}</p>
+            <Segmented
+              label="Length"
+              value={String(minutes) as '2' | '5'}
+              options={[
+                { value: '2', label: '2 minutes' },
+                { value: '5', label: '5 minutes' },
+              ]}
+              onChange={(v) => choose(patternKey, v === '2' ? 2 : 5)}
+            />
+          </div>
+          <RatingScale value={before} onChange={setBefore} legend="How tense do you feel? (optional)" />
+          <div className="row">
+            <Button size="lg" onClick={begin}>
+              Begin
+            </Button>
+          </div>
+        </Card>
+        <TechniqueGuide pattern={patternKey} minutes={minutes} onChoose={choose} />
+      </div>
     </>
   )
 }

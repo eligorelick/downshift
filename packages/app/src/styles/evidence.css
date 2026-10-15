@@ -18,8 +18,9 @@
   align-items: center;
   min-height: var(--tap);
   padding: 0 var(--space-3);
-  border-radius: var(--radius-pill);
-  background: var(--surface-2);
+  border-radius: 0;
+  border-bottom: 1px solid var(--border-strong);
+  background: transparent;
   color: var(--text);
   font-size: var(--text-sm);
   font-weight: 600;
@@ -76,14 +77,17 @@ section.ev-section:focus-visible {
   gap: var(--space-2);
 }
 .ev-row {
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  padding: var(--space-4) 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  background: transparent;
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
   font-size: var(--text-sm);
+}
+.ev-row p {
+  max-width: 78ch;
 }
 .ev-row-head {
   display: flex;

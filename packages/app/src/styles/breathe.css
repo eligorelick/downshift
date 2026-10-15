@@ -13,7 +13,9 @@
   min-width: 0;
 }
 .guide legend {
-  font-weight: 650;
+  font-family: var(--font-editorial);
+  font-size: 1.75rem;
+  font-weight: 500;
   padding: 0;
   margin-bottom: var(--space-3);
 }
@@ -22,9 +24,16 @@
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-3);
 }
-@media (min-width: 900px) {
-  .guide-list {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+.breathe-setup {
+  display: grid;
+  gap: var(--space-6);
+  align-items: start;
+  min-width: 0;
+}
+@media (min-width: 1150px) {
+  .breathe-setup {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: var(--space-7);
   }
 }
 .guide-card {
@@ -33,9 +42,10 @@
   flex-direction: column;
   gap: var(--space-1);
   padding: var(--space-4);
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
+  background: transparent;
+  border: 0;
+  border-left: 2px solid var(--border-strong);
+  border-radius: 0;
   cursor: pointer;
 }
 .guide-card:hover {
@@ -123,7 +133,6 @@
   fill: none;
   stroke: var(--border-strong);
   stroke-width: 1.5;
-  stroke-dasharray: 3 5;
 }
 .pacer-orb {
   fill: var(--accent-soft);
@@ -133,7 +142,8 @@
 .pacer-secs {
   fill: var(--accent-text);
   font-size: 52px;
-  font-weight: 650;
+  font-family: var(--font-editorial);
+  font-weight: 500;
 }
 .pacer-label {
   font-size: var(--text-lg);

@@ -94,7 +94,7 @@ export function Layout({ page, children }: { page: PageKey; children: ReactNode 
         ))}
       </header>
 
-      <main id="main" ref={main} className="main" tabIndex={-1}>
+      <main id="main" ref={main} className="main" data-page={page} tabIndex={-1}>
         {children}
       </main>
 
