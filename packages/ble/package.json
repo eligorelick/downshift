@@ -12,6 +12,6 @@
     "@downshift/core": "workspace:*"
   },
   "devDependencies": {
-    "@types/web-bluetooth": "^0.0.20"
+    "@types/web-bluetooth": "^0.0.22"
   }
 }
